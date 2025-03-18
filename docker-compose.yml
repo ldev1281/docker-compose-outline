@@ -75,6 +75,7 @@ services:
       SMTP_SECURE: ${OUTLINE_APP_SMTP_SECURE}
       # Email Sign-in
       ENABLE_EMAIL_SIGNIN: ${OUTLINE_APP_ENABLE_EMAIL_SIGNIN}
+      ENABLE_EMAIL_AUTH: ${OUTLINE_APP_ENABLE_EMAIL_AUTH}
 
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
