@@ -38,6 +38,16 @@ OUTLINE_POSTGRES_DB=outline
 OUTLINE_APP_URL=https://your-domain.com
 OUTLINE_APP_SECRET_KEY=your_outline_secret_key
 OUTLINE_APP_UTILS_SECRET=your_outline_utils_secret_key
+
+OUTLINE_APP_SMTP_HOST=smtp.example.com
+OUTLINE_APP_SMTP_PORT=587
+OUTLINE_APP_SMTP_USERNAME=your_smtp_username
+OUTLINE_APP_SMTP_PASSWORD=your_smtp_password
+OUTLINE_APP_SMTP_FROM_EMAIL=noreply@your-domain.com
+OUTLINE_APP_SMTP_REPLY_EMAIL=support@your-domain.com
+OUTLINE_APP_SMTP_SECURE=false
+
+OUTLINE_APP_ENABLE_EMAIL_SIGNIN=true
 ```
 
 #### Generate Secure Secret Keys
@@ -45,10 +55,7 @@ OUTLINE_APP_UTILS_SECRET=your_outline_utils_secret_key
 Use the following commands to generate strong random secrets:
 
 ```
-# Generate a 64-character secret key for OUTLINE_APP_SECRET_KEY
-openssl rand -hex 32
-
-# Generate a 64-character utils secret key for OUTLINE_APP_UTILS_SECRET
+# Generate a 64-character secret key for OUTLINE_APP_SECRET_KEY and another one for OUTLINE_APP_UTILS_SECRET
 openssl rand -hex 32
 ```
 

@@ -65,6 +65,16 @@ services:
       PGSSLMODE: disable
       # Redis connection
       REDIS_URL: redis://outline-redis:6379
+      # SMTP configuration
+      SMTP_HOST: ${OUTLINE_APP_SMTP_HOST}
+      SMTP_PORT: ${OUTLINE_APP_SMTP_PORT}
+      SMTP_USERNAME: ${OUTLINE_APP_SMTP_USERNAME}
+      SMTP_PASSWORD: ${OUTLINE_APP_SMTP_PASSWORD}
+      SMTP_FROM_EMAIL: ${OUTLINE_APP_SMTP_FROM_EMAIL}
+      SMTP_REPLY_EMAIL: ${OUTLINE_APP_SMTP_REPLY_EMAIL}
+      SMTP_SECURE: ${OUTLINE_APP_SMTP_SECURE}
+      # Email Sign-in
+      ENABLE_EMAIL_SIGNIN: ${OUTLINE_APP_ENABLE_EMAIL_SIGNIN}
 
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
