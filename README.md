@@ -22,7 +22,13 @@ docker network create --driver bridge caddy-outline
 
 ### 3. Configure `.env` File
 
-Create a `.env` file in the project root with the following content:
+Copy the example environment file and update the required values:
+
+```
+cp .env.example .env
+```
+
+Edit the `.env` file and replace placeholders with your actual data:
 
 ```
 OUTLINE_POSTGRES_USER=outline
@@ -34,7 +40,19 @@ OUTLINE_APP_SECRET_KEY=your_outline_secret_key
 OUTLINE_APP_UTILS_SECRET=your_outline_utils_secret_key
 ```
 
-Replace `your-domain.com` and other placeholder values with your actual data.
+#### Generate Secure Secret Keys
+
+Use the following commands to generate strong random secrets:
+
+```
+# Generate a 64-character secret key for OUTLINE_APP_SECRET_KEY
+openssl rand -hex 32
+
+# Generate a 64-character utils secret key for OUTLINE_APP_UTILS_SECRET
+openssl rand -hex 32
+```
+
+Replace `your-domain.com` and the other placeholder values with your actual data.
 
 ### 4. Review Docker Compose Configuration
 
@@ -57,3 +75,4 @@ docker compose up -d
 ```
 docker compose ps
 ```
+
