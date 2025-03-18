@@ -1,0 +1,90 @@
+services:
+
+  outline-postgres:
+    image: postgres:14
+    container_name: outline-postgres
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${OUTLINE_POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    environment:
+      POSTGRES_USER: ${OUTLINE_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${OUTLINE_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${OUTLINE_POSTGRES_DB}
+      
+    volumes:
+      - ./vol/outline-postgres/var/lib/postgresql/data:/var/lib/postgresql/data
+
+    networks:
+      - outline-private
+
+
+
+  outline-redis:
+    image: redis:6
+    container_name: outline-redis
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+    volumes:
+      - ./vol/outline-redis/data/:/data/
+      - ./vol/outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
+
+    networks:
+      - outline-private
+
+
+
+  outline-app:
+    image: outlinewiki/outline:latest
+    container_name: outline-app
+    restart: unless-stopped
+
+    depends_on:
+      - outline-postgres
+      - outline-redis
+
+    environment:
+      # URL where your Outline app will be available
+      URL: ${OUTLINE_APP_URL}
+      COLLABORATION_URL: ${OUTLINE_APP_URL}
+      # Security keys
+      SECRET_KEY: ${OUTLINE_APP_SECRET_KEY}
+      UTILS_SECRET: ${OUTLINE_APP_UTILS_SECRET}
+      # PostgreSQL database connection
+      DATABASE_URL: postgres://${OUTLINE_POSTGRES_USER}:${OUTLINE_POSTGRES_PASSWORD}@outline-postgres:5432/${OUTLINE_POSTGRES_DB}
+      PGSSLMODE: disable
+      # Redis connection
+      REDIS_URL: redis://outline-redis:6379
+
+    volumes:
+      - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
+
+    networks:
+      - outline-private
+      - caddy-outline
+
+    expose:
+      - 3000
+
+
+
+networks:
+
+  caddy-outline:
+    name: caddy-outline
+    external: true
+
+  outline-private:
+    name: outline-private
+    driver: bridge
+    internal: true
