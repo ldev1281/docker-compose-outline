@@ -65,7 +65,7 @@ services:
 
     environment:
       LOG_LEVEL: "debug"
-      DEBUG: "email,utils,default,koa,events,authentication"
+      DEBUG: "email"
       # URL where your Outline app will be available
       URL: ${OUTLINE_APP_URL}
       COLLABORATION_URL: ${OUTLINE_APP_URL}
