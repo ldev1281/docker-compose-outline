@@ -64,6 +64,7 @@ services:
       - outline-redis
 
     environment:
+      DEBUG: "email,utils,default,koa,events,authentication"
       # URL where your Outline app will be available
       URL: ${OUTLINE_APP_URL}
       COLLABORATION_URL: ${OUTLINE_APP_URL}
