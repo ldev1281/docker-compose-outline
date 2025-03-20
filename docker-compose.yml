@@ -49,10 +49,7 @@ services:
     container_name: outline-socat-smtp
     restart: unless-stopped
 
-    command: tcp-listen:1025,fork,reuseaddr tcp-connect:${OUTLINE_SOCAT_SMTP_HOST}:${OUTLINE_SOCAT_SMTP_PORT}
-    
-    ports:
-    - 1025:1025
+    command: tcp-listen:587,fork,reuseaddr tcp-connect:${OUTLINE_SOCAT_SMTP_HOST}:${OUTLINE_SOCAT_SMTP_PORT}
 
     networks:
       - outline-universe    
@@ -85,15 +82,12 @@ services:
       REDIS_URL: redis://outline-redis:6379
       # SMTP configuration
       SMTP_HOST: outline-socat-smtp
-      SMTP_PORT: 1025
+      SMTP_PORT: 587
       #
       SMTP_USERNAME: ${OUTLINE_APP_SMTP_USERNAME}
       SMTP_PASSWORD: ${OUTLINE_APP_SMTP_PASSWORD}
       SMTP_FROM_EMAIL: ${OUTLINE_APP_SMTP_FROM_EMAIL}
       SMTP_SECURE: ${OUTLINE_APP_SMTP_SECURE}
-      # Slack OAuth
-      SLACK_CLIENT_ID: ${OUTLINE_APP_SLACK_CLIENT_ID}
-      SLACK_CLIENT_SECRET: ${OUTLINE_APP_SLACK_CLIENT_SECRET}
 
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
@@ -101,9 +95,6 @@ services:
     networks:
       - outline-private
       - caddy-outline
-
-    expose:
-      - 3000
 
 
 
