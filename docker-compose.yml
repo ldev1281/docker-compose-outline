@@ -51,12 +51,11 @@ services:
 
     command: tcp-listen:1025,fork,reuseaddr tcp-connect:${OUTLINE_SOCAT_SMTP_HOST}:${OUTLINE_SOCAT_SMTP_PORT}
     
-    ports:
-    - "1025:1025"
-    
     networks:
       - outline-universe    
       - outline-private
+
+
 
   outline-app:
     image: outlinewiki/outline:0.82.0
