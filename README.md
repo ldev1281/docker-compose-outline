@@ -31,23 +31,32 @@ cp .env.example .env
 Edit the `.env` file and replace placeholders with your actual data:
 
 ```
+#
+#
+# postgres
 OUTLINE_POSTGRES_USER=outline
 OUTLINE_POSTGRES_PASSWORD=your_postgres_password
 OUTLINE_POSTGRES_DB=outline
 
+#
+#
+# SMTP settings
+OUTLINE_SOCAT_SMTP_HOST=smtp.mailgun.org
+OUTLINE_SOCAT_SMTP_PORT=587
+
+#
+#
+# otline app
 OUTLINE_APP_URL=https://your-domain.com
+
 OUTLINE_APP_SECRET_KEY=your_outline_secret_key
 OUTLINE_APP_UTILS_SECRET=your_outline_utils_secret_key
 
-OUTLINE_APP_SMTP_HOST=smtp.example.com
-OUTLINE_APP_SMTP_PORT=587
+# SMTP
 OUTLINE_APP_SMTP_USERNAME=your_smtp_username
 OUTLINE_APP_SMTP_PASSWORD=your_smtp_password
 OUTLINE_APP_SMTP_FROM_EMAIL=noreply@your-domain.com
-OUTLINE_APP_SMTP_REPLY_EMAIL=support@your-domain.com
 OUTLINE_APP_SMTP_SECURE=false
-
-OUTLINE_APP_ENABLE_EMAIL_SIGNIN=true
 ```
 
 #### Generate Secure Secret Keys
