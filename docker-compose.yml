@@ -97,7 +97,7 @@ services:
 
     networks:
       - outline-private
-      - caddy-outlin
+      - caddy-outline
 
 
 
