@@ -50,6 +50,10 @@ services:
     restart: unless-stopped
 
     command: tcp-listen:1025,fork,reuseaddr tcp-connect:${OUTLINE_SOCAT_SMTP_HOST}:${OUTLINE_SOCAT_SMTP_PORT}
+    
+    ports:
+    - "1025:1025"
+    
     networks:
       - outline-universe    
       - outline-private
