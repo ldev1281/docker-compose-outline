@@ -97,10 +97,7 @@ services:
 
     networks:
       - outline-private
-      - caddy-outline
-
-    expose:
-      - 3000
+      - caddy-outlin
 
 
 
