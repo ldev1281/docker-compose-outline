@@ -20,75 +20,29 @@ git clone https://github.com/jordimock/docker-compose-outline.git .
 docker network create --driver bridge caddy-outline
 ```
 
-### 3. Configure `.env` File
+### 3. Configure and Start the Application
 
-Copy the example environment file and update the required values:
+To configure and launch all required services, run the provided script:
 
-```
-cp .env.example .env
-```
-
-Edit the `.env` file and replace placeholders with your actual data:
-
-```
-#
-#
-# postgres
-OUTLINE_POSTGRES_USER=outline
-OUTLINE_POSTGRES_PASSWORD=your_postgres_password
-OUTLINE_POSTGRES_DB=outline
-
-#
-#
-# SMTP settings
-OUTLINE_SOCAT_SMTP_HOST=smtp.mailgun.org
-OUTLINE_SOCAT_SMTP_PORT=587
-
-#
-#
-# otline app
-OUTLINE_APP_URL=https://your-domain.com
-
-OUTLINE_APP_SECRET_KEY=your_outline_secret_key
-OUTLINE_APP_UTILS_SECRET=your_outline_utils_secret_key
-
-# SMTP
-OUTLINE_APP_SMTP_USERNAME=your_smtp_username
-OUTLINE_APP_SMTP_PASSWORD=your_smtp_password
-OUTLINE_APP_SMTP_FROM_EMAIL=noreply@your-domain.com
-OUTLINE_APP_SMTP_SECURE=false
+```bash
+./tools/init.bash
 ```
 
-#### Generate Secure Secret Keys
+The script will:
 
-Use the following commands to generate strong random secrets:
+- Prompt you to enter configuration values (press `Enter` to accept defaults).
+- Generate secure random secrets automatically.
+- Save all settings to the `.env` file located at the project root.
 
-```
-# Generate a 64-character secret key for OUTLINE_APP_SECRET_KEY and another one for OUTLINE_APP_UTILS_SECRET
-openssl rand -hex 32
-```
+**Important:**  
+Make sure to securely store your `.env` file locally for future reference or redeployment.
 
-Replace `your-domain.com` and the other placeholder values with your actual data.
+### 4. Verify Running Containers
 
-### 4. Review Docker Compose Configuration
+Check if all containers are running properly:
 
-Key services:
-
-- `outline-postgres`: PostgreSQL database
-- `outline-redis`: Redis cache
-- `outline-app`: Outline Wiki application
-
-The `outline-app` container is only exposed to the `caddy-outline` network and is not directly accessible from the internet.
-
-### 5. Start the Services
-
-```
-docker compose up -d
+```bash
+docker ps
 ```
 
-### 6. Verify Running Containers
-
-```
-docker compose ps
-```
-
+Your Outline instance should now be operational.
