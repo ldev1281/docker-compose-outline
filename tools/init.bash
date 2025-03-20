@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-ENV_FILE="../.env"
+# Get the absolute path of script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../.env"
 
 # -------------------------------------
 # Outline setup script
@@ -62,25 +64,33 @@ prompt_for_configuration() {
     OUTLINE_APP_SMTP_SECURE=${input:-${OUTLINE_APP_SMTP_SECURE:-false}}
 }
 
-# Display configuration and ask user confirmation
+# Display configuration nicely and ask for user confirmation
 confirm_configuration() {
     echo ""
-    echo "-------------------------------------------"
-    echo "         Current Configuration:"
-    echo "-------------------------------------------"
-    echo "OUTLINE_POSTGRES_USER = $OUTLINE_POSTGRES_USER"
-    echo "OUTLINE_POSTGRES_PASSWORD = $OUTLINE_POSTGRES_PASSWORD"
-    echo "OUTLINE_POSTGRES_DB = $OUTLINE_POSTGRES_DB"
-    echo "OUTLINE_SOCAT_SMTP_HOST = $OUTLINE_SOCAT_SMTP_HOST"
-    echo "OUTLINE_SOCAT_SMTP_PORT = $OUTLINE_SOCAT_SMTP_PORT"
-    echo "OUTLINE_APP_URL = $OUTLINE_APP_URL"
-    echo "OUTLINE_APP_SECRET_KEY = $OUTLINE_APP_SECRET_KEY"
-    echo "OUTLINE_APP_UTILS_SECRET = $OUTLINE_APP_UTILS_SECRET"
-    echo "OUTLINE_APP_SMTP_USERNAME = $OUTLINE_APP_SMTP_USERNAME"
-    echo "OUTLINE_APP_SMTP_PASSWORD = $OUTLINE_APP_SMTP_PASSWORD"
-    echo "OUTLINE_APP_SMTP_FROM_EMAIL = $OUTLINE_APP_SMTP_FROM_EMAIL"
-    echo "OUTLINE_APP_SMTP_SECURE = $OUTLINE_APP_SMTP_SECURE"
-    echo "-------------------------------------------"
+    echo "Configuration ready to save:"
+    echo "-----------------------------------------------------"
+    echo "# postgres"
+    echo "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
+    echo "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
+    echo "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
+
+    echo -e "\n# SMTP settings"
+    echo "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
+    echo "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
+
+    echo -e "\n# Outline app"
+    echo "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
+
+    echo -e "\n# Secrets"
+    echo "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
+    echo "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
+
+    echo -e "\n# SMTP"
+    echo "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
+    echo "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
+    echo "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
+    echo "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
+    echo "-----------------------------------------------------"
 
     read -p "Proceed with this configuration? (y/n): " CONFIRM
     if [[ "$CONFIRM" != "y" ]]; then
