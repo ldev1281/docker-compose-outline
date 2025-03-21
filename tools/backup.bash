@@ -72,7 +72,7 @@ fi
 
 if [ -n "$GPG_FINGERPRINT" ]; then
     echo "Encrypting archive with recipient fingerprint ${GPG_FINGERPRINT}..."
-    gpg --output "${TARGET_PATH}/${ENCRYPTED_NAME}" --encrypt --recipient "$GPG_FINGERPRINT" "${TARGET_PATH}/${ARCHIVE_NAME}"
+    gpg --trust-model always --output "${TARGET_PATH}/${ENCRYPTED_NAME}" --encrypt --recipient "$GPG_FINGERPRINT" "${TARGET_PATH}/${ARCHIVE_NAME}"
 
     if [ $? -eq 0 ]; then
         rm "${TARGET_PATH}/${ARCHIVE_NAME}"
