@@ -51,6 +51,11 @@ PROJECT_ROOT="${SCRIPT_DIR}/.."
 ENV_FILE="${PROJECT_ROOT}/.env"
 VOL_DIR="${PROJECT_ROOT}/vol"
 
+# Clean old backup files
+echo "Cleaning up old backup files..."
+rm -f "${TARGET_PATH}/${ARCHIVE_NAME}"
+rm -f "${TARGET_PATH}/${ENCRYPTED_NAME}"
+
 # Stop Docker containers
 echo "Stopping containers..."
 docker compose --project-directory "$PROJECT_ROOT" down
