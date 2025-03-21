@@ -26,7 +26,8 @@ load_existing_env() {
 # Prompt user to confirm or update configuration
 prompt_for_configuration() {
     echo "Please enter configuration values (press Enter to keep current/default value):"
-
+    echo ""
+    
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
