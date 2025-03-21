@@ -28,6 +28,9 @@ prompt_for_configuration() {
     echo "Please enter configuration values (press Enter to keep current/default value):"
     echo ""
     
+    echo "postgres:"
+    echo ""
+
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
@@ -37,21 +40,18 @@ prompt_for_configuration() {
     read -p "OUTLINE_POSTGRES_DB [${OUTLINE_POSTGRES_DB:-outline}]: " input
     OUTLINE_POSTGRES_DB=${input:-${OUTLINE_POSTGRES_DB:-outline}}
 
+    echo "socat-smtp:"
+    echo ""
+    
     read -p "OUTLINE_SOCAT_SMTP_HOST [${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SOCAT_SMTP_HOST=${input:-${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}}
 
     read -p "OUTLINE_SOCAT_SMTP_PORT [${OUTLINE_SOCAT_SMTP_PORT:-587}]: " input
     OUTLINE_SOCAT_SMTP_PORT=${input:-${OUTLINE_SOCAT_SMTP_PORT:-587}}
 
-    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
-    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
-
-    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}]: " input
-    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}}
-
-    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}]: " input
-    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}}
-
+    echo "app-smtp:"
+    echo ""
+    
     read -p "OUTLINE_APP_SMTP_USERNAME [${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}]: " input
     OUTLINE_APP_SMTP_USERNAME=${input:-${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}}
 
@@ -63,6 +63,21 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_APP_SMTP_SECURE [${OUTLINE_APP_SMTP_SECURE:-false}]: " input
     OUTLINE_APP_SMTP_SECURE=${input:-${OUTLINE_APP_SMTP_SECURE:-false}}
+
+    echo "app:"
+    echo ""
+    
+    read -p "OUTLINE_APP_VERSION [${OUTLINE_APP_VERSION:-0.82.0}]: " input
+    OUTLINE_APP_VERSION=${input:-${OUTLINE_APP_VERSION:-0.82.0}}
+
+    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
+    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
+
+    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}]: " input
+    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}}
+
+    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}]: " input
+    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}}
 }
 
 # Display configuration nicely and ask for user confirmation
@@ -77,18 +92,19 @@ confirm_and_save_configuration() {
         "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
         "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
         ""
-        "# Outline app"
-        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
-        ""
-        "# Secrets"
-        "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
-        "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
-        ""
         "# SMTP"
         "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
         "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
         "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
         "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
+        ""
+        "# Outline app"
+        "OUTLINE_APP_VERSION=${OUTLINE_APP_VERSION}"
+        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
+        ""
+        "# Secrets"
+        "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
+        "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
     )
 
     echo ""

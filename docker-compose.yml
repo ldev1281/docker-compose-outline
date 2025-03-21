@@ -60,7 +60,7 @@ services:
 
 
   outline-app:
-    image: outlinewiki/outline:0.82.0
+    image: outlinewiki/outline:${OUTLINE_APP_VERSION}
     container_name: outline-app
     restart: unless-stopped
 
