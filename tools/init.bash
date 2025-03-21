@@ -39,8 +39,8 @@ prompt_for_configuration() {
     read -p "OUTLINE_POSTGRES_DB [${OUTLINE_POSTGRES_DB:-outline}]: " input
     OUTLINE_POSTGRES_DB=${input:-${OUTLINE_POSTGRES_DB:-outline}}
 
-    echo "socat-smtp:"
     echo ""
+    echo "socat-smtp:"
     
     read -p "OUTLINE_SOCAT_SMTP_HOST [${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SOCAT_SMTP_HOST=${input:-${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}}
