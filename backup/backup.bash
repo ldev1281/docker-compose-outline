@@ -9,7 +9,7 @@ set -e
 # Get absolute paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${SCRIPT_DIR}/.."
-BACKUP_DIR="${PROJECT_ROOT}/backup/data"
+BACKUP_DIR="${SCRIPT_DIR}/data"
 
 # Load config
 source "${SCRIPT_DIR}/.config.bash"
