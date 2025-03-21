@@ -1,4 +1,4 @@
 .env
 vol/
 !vol/.gitkeep
-backup/
+backup/data/
