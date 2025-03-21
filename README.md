@@ -11,7 +11,7 @@ Clone the project to your server in the `/docker/outline/` directory:
 ```
 mkdir -p /docker/outline
 cd /docker/outline
-git clone https://github.com/jordimock/docker-compose-outline.git .
+git clone --recurse-submodules https://github.com/jordimock/docker-compose-outline.git .
 ```
 
 ### 2. Create Docker Networks
