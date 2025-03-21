@@ -29,7 +29,6 @@ prompt_for_configuration() {
     echo ""
     
     echo "postgres:"
-    echo ""
 
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
@@ -49,8 +48,8 @@ prompt_for_configuration() {
     read -p "OUTLINE_SOCAT_SMTP_PORT [${OUTLINE_SOCAT_SMTP_PORT:-587}]: " input
     OUTLINE_SOCAT_SMTP_PORT=${input:-${OUTLINE_SOCAT_SMTP_PORT:-587}}
 
-    echo "app-smtp:"
     echo ""
+    echo "app-smtp:"
     
     read -p "OUTLINE_APP_SMTP_USERNAME [${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}]: " input
     OUTLINE_APP_SMTP_USERNAME=${input:-${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}}
@@ -64,8 +63,8 @@ prompt_for_configuration() {
     read -p "OUTLINE_APP_SMTP_SECURE [${OUTLINE_APP_SMTP_SECURE:-false}]: " input
     OUTLINE_APP_SMTP_SECURE=${input:-${OUTLINE_APP_SMTP_SECURE:-false}}
 
-    echo "app:"
     echo ""
+    echo "app:"
     
     read -p "OUTLINE_APP_VERSION [${OUTLINE_APP_VERSION:-0.82.0}]: " input
     OUTLINE_APP_VERSION=${input:-${OUTLINE_APP_VERSION:-0.82.0}}
