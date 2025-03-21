@@ -48,13 +48,6 @@ if [[ "$BACKUP_FILE" == *.gpg ]]; then
         echo "Possible causes:" >&2
         echo "  - The required private key is missing from your keyring." >&2
         echo "  - You might have entered an incorrect passphrase." >&2
-        echo "" >&2
-        echo "To check available private keys, run:" >&2
-        echo "  gpg --list-secret-keys" >&2
-        echo "" >&2
-        echo "Verify the key fingerprint used for encryption matches one of your private keys." >&2
-        echo "" >&2
-        echo "Backup file: $BACKUP_FILE" >&2
         exit 1
     fi
     ARCHIVE_FILE="$TMP_ARCHIVE"
@@ -65,7 +58,7 @@ fi
 
 #
 #
-# Step 2: Test archive extraction
+# Step 2: Archive extraction
 echo "Extraction to temporary directory..."
 
 if tar -xzf "$ARCHIVE_FILE" -C "$TMP_DIR"; then
@@ -76,8 +69,63 @@ else
     exit 1
 fi
 
-# Cleanup temp directory after successful test
-rm -rf "$TMP_DIR"
-echo "Temporary files cleaned up."
 
-echo "Backup file is valid and ready for restore"
+#
+#
+# Step 3: Stopping Docker containers
+echo "Stopping Docker containers..."
+docker compose --project-directory "$PROJECT_ROOT" down
+
+
+#
+#
+# Step 4. Preparing to restore
+echo "Backing up current .env and vol/ to $PREV_BACKUP_DIR..."
+
+PREV_BACKUP_DIR="${PROJECT_ROOT}/prev-$(date +%Y%m%d-%H%M%S)-$(tr -dc a-z0-9 </dev/urandom | head -c 8)"
+mkdir -p "$PREV_BACKUP_DIR"
+
+if [ -f "${PROJECT_ROOT}/.env" ]; then
+    mv "${PROJECT_ROOT}/.env" "$PREV_BACKUP_DIR/"
+    echo "Backed up existing .env to $PREV_BACKUP_DIR/"
+else
+    echo "No .env found to backup"
+fi
+
+if [ -d "${PROJECT_ROOT}/vol" ]; then
+    mv "${PROJECT_ROOT}/vol" "$PREV_BACKUP_DIR/"
+    echo "Backed up existing vol/ to $PREV_BACKUP_DIR/"
+else
+    echo "No vol/ directory found to backup"
+fi
+
+
+
+#
+#
+# Step 5: Restoring files from backup archive
+echo "Restoring new .env and vol/ from backup archive..."
+
+if [ -f "${TMP_DIR}/.env" ]; then
+    mv "${TMP_DIR}/.env" "${PROJECT_ROOT}/.env"
+    echo "Restored .env"
+else
+    echo "Warning: .env not found in backup archive" >&2
+fi
+
+if [ -d "${TMP_DIR}/vol" ]; then
+    mv "${TMP_DIR}/vol" "${PROJECT_ROOT}/vol"
+    echo "Restored vol/"
+else
+    echo "Warning: vol/ directory not found in backup archive" >&2
+fi
+
+
+#
+#
+# Step 6: Starting Docker containers
+echo "Starting Docker containers..."
+docker compose --project-directory "$PROJECT_ROOT" up -d
+
+
+echo "Done!"
