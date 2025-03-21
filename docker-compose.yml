@@ -36,8 +36,9 @@ services:
       retries: 3
 
     volumes:
+      - ./outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
+      
       - ./vol/outline-redis/data/:/data/
-      - ./vol/outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
 
     networks:
       - outline-private
