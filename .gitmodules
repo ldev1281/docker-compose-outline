@@ -1,5 +1,3 @@
 [submodule "backup-tool"]
     path = backup-tool
     url = https://github.com/jordimock/backup-tool.git
-
-    
