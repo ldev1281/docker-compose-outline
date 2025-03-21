@@ -70,10 +70,9 @@ if [ ! -f "${TARGET_PATH}/${ARCHIVE_NAME}" ]; then
     exit 1
 fi
 
-# Encrypt archive if GPG key is provided
-if [ -n "$GPG_KEY" ]; then
-    echo "Encrypting archive with recipient fingerprint ${GPG_KEY}..."
-    gpg --output "${TARGET_PATH}/${ENCRYPTED_NAME}" --encrypt --recipient "$GPG_KEY" "${TARGET_PATH}/${ARCHIVE_NAME}"
+if [ -n "$GPG_FINGERPRINT" ]; then
+    echo "Encrypting archive with recipient fingerprint ${GPG_FINGERPRINT}..."
+    gpg --output "${TARGET_PATH}/${ENCRYPTED_NAME}" --encrypt --recipient "$GPG_FINGERPRINT" "${TARGET_PATH}/${ARCHIVE_NAME}"
 
     if [ $? -eq 0 ]; then
         rm "${TARGET_PATH}/${ARCHIVE_NAME}"
