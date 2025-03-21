@@ -89,21 +89,22 @@ fi
 #
 #
 # Step 5: Restoring files from backup archive
-echo "Restoring new .env and vol/ from backup archive..."
+echo "Restoring files from backup archive..."
 
-if [ -f "${TMP_DIR}/.env" ]; then
-    mv "${TMP_DIR}/.env" "${PROJECT_ROOT}/.env"
-    echo "Restored .env"
-else
-    echo "Warning: .env not found in backup archive" >&2
-fi
+for ITEM in "${TO_BACKUP[@]}"; do
+    SRC="${TMP_DIR}/${ITEM}"
+    DST="${PROJECT_ROOT}/${ITEM}"
 
-if [ -d "${TMP_DIR}/vol" ]; then
-    mv "${TMP_DIR}/vol" "${PROJECT_ROOT}/vol"
-    echo "Restored vol/"
-else
-    echo "Warning: vol/ directory not found in backup archive" >&2
-fi
+    if [ -f "$SRC" ]; then
+        echo "Restoring file: ${ITEM}"
+        mv "$SRC" "$DST"
+    elif [ -d "$SRC" ]; then
+        echo "Restoring directory: ${ITEM}"
+        mv "$SRC" "$DST"
+    else
+        echo "Warning: ${ITEM} not found in backup archive" >&2
+    fi
+done
 
 
 #
