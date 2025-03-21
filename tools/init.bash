@@ -26,7 +26,8 @@ load_existing_env() {
 # Prompt user to confirm or update configuration
 prompt_for_configuration() {
     echo "Please enter configuration values (press Enter to keep current/default value):"
-
+    echo ""
+    
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
@@ -65,68 +66,57 @@ prompt_for_configuration() {
 }
 
 # Display configuration nicely and ask for user confirmation
-confirm_configuration() {
+confirm_and_save_configuration() {
+    CONFIG_LINES=(
+        "# postgres"
+        "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
+        "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
+        "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
+        ""
+        "# SMTP settings"
+        "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
+        "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
+        ""
+        "# Outline app"
+        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
+        ""
+        "# Secrets"
+        "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
+        "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
+        ""
+        "# SMTP"
+        "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
+        "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
+        "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
+        "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
+    )
+
     echo ""
-    echo "Configuration ready to save:"
-    echo "-----------------------------------------------------"
-    echo "# postgres"
-    echo "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
-    echo "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
-    echo "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
-
-    echo -e "\n# SMTP settings"
-    echo "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
-    echo "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
-
-    echo -e "\n# Outline app"
-    echo "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
-
-    echo -e "\n# Secrets"
-    echo "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
-    echo "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
-
-    echo -e "\n# SMTP"
-    echo "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
-    echo "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
-    echo "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
-    echo "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
+    echo "The following environment configuration will be saved:"
     echo "-----------------------------------------------------"
 
+    for line in "${CONFIG_LINES[@]}"; do
+        echo "$line"
+    done
+
+    echo "-----------------------------------------------------"
+    echo "" 
+
+    #
     read -p "Proceed with this configuration? (y/n): " CONFIRM
+    echo "" 
     if [[ "$CONFIRM" != "y" ]]; then
         echo "Configuration aborted by user."
+        echo "" 
         exit 1
     fi
-}
 
-# Save configuration to .env file
-save_to_env_file() {
-    {
-        echo "# postgres"
-        echo "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
-        echo "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
-        echo "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
-
-        echo -e "\n# SMTP settings"
-        echo "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
-        echo "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
-
-        echo -e "\n# Outline app"
-        echo "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
-
-        echo -e "\n# Secrets"
-        echo "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
-        echo "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
-
-        echo -e "\n# SMTP"
-        echo "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
-        echo "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
-        echo "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
-        echo "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
-    } > "$ENV_FILE"
-
+    #
+    printf "%s\n" "${CONFIG_LINES[@]}" > "$ENV_FILE"
     echo ".env file saved to $ENV_FILE"
+    echo "" 
 }
+
 
 # Set up containers and initialize the database
 setup_containers() {
@@ -144,8 +134,10 @@ setup_containers() {
 
     echo "Seeding the database with email: ${OUTLINE_APP_SMTP_FROM_EMAIL}"
     docker compose run --rm outline-app node build/server/scripts/seed.js "${OUTLINE_APP_SMTP_FROM_EMAIL}"
+    echo "" 
 
     echo "Seeding complete. Please copy the activation link from the console output and open it in your browser."
+    echo "" 
 }
 
 # -----------------------------------
@@ -164,11 +156,8 @@ fi
 # Always prompt user for configuration confirmation
 prompt_for_configuration
 
-# Ask user confirmation before saving and proceeding
-confirm_configuration
-
-# Save confirmed configuration
-save_to_env_file
+# Ask user confirmation and save
+confirm_and_save_configuration
 
 # Run container setup
 setup_containers

@@ -36,8 +36,10 @@ services:
       retries: 3
 
     volumes:
+      # Configuration
+      - ./outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
+      # Dynamicaly allocated data
       - ./vol/outline-redis/data/:/data/
-      - ./vol/outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
 
     networks:
       - outline-private
@@ -67,8 +69,6 @@ services:
       - outline-redis
 
     environment:
-      LOG_LEVEL: "debug"
-      DEBUG: "email,mailer"
       # URL where your Outline app will be available
       URL: ${OUTLINE_APP_URL}
       COLLABORATION_URL: ${OUTLINE_APP_URL}
