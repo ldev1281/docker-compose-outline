@@ -27,7 +27,7 @@ This project is designed to work with the reverse proxy configuration provided b
    docker network create --driver bridge caddy-outline
    ```
 
-2. **Set up the Caddy reverse proxy** by following the instructions in the [`docker-compose-caddy` repository](https://github.com/jordimock/docker-compose-caddy).  
+2. **Set up the Caddy reverse proxy** by following the instructions in the [docker-compose-caddy](https://github.com/jordimock/docker-compose-caddy).  
 
 Once Caddy is installed, it will automatically detect the Outline container via the `caddy-outline` network and route traffic accordingly.
 
