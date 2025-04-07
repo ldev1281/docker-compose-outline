@@ -9,12 +9,12 @@ ENV_FILE="${SCRIPT_DIR}/../.env"
 # Outline setup script
 # -------------------------------------
 
+OUTLINE_REDIS_VERSION=6
+OUTLINE_POSTGRES_VERSION=14
+OUTLINE_APP_VERSION="0.82.0"
+
 # Generate secure random defaults
 generate_defaults() {
-    OUTLINE_REDIS_VERSION=6
-    OUTLINE_POSTGRES_VERSION=14
-    OUTLINE_APP_VERSION="0.82.0"
-
     POSTGRES_PASSWORD=$(openssl rand -hex 32)
     SECRET_KEY=$(openssl rand -hex 32)
     UTILS_SECRET=$(openssl rand -hex 32)
