@@ -1,3 +1,4 @@
 .env
 vol/
-!vol/.gitkeep
+backup-tool/
+backups/

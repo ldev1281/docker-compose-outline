@@ -9,6 +9,10 @@ ENV_FILE="${SCRIPT_DIR}/../.env"
 # Outline setup script
 # -------------------------------------
 
+OUTLINE_REDIS_VERSION=6
+OUTLINE_POSTGRES_VERSION=14
+OUTLINE_APP_VERSION="0.82.0"
+
 # Generate secure random defaults
 generate_defaults() {
     POSTGRES_PASSWORD=$(openssl rand -hex 32)
@@ -28,6 +32,8 @@ prompt_for_configuration() {
     echo "Please enter configuration values (press Enter to keep current/default value):"
     echo ""
     
+    echo "postgres:"
+    
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
@@ -37,21 +43,18 @@ prompt_for_configuration() {
     read -p "OUTLINE_POSTGRES_DB [${OUTLINE_POSTGRES_DB:-outline}]: " input
     OUTLINE_POSTGRES_DB=${input:-${OUTLINE_POSTGRES_DB:-outline}}
 
+    echo ""
+    echo "socat-smtp:"
+    
     read -p "OUTLINE_SOCAT_SMTP_HOST [${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SOCAT_SMTP_HOST=${input:-${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}}
 
     read -p "OUTLINE_SOCAT_SMTP_PORT [${OUTLINE_SOCAT_SMTP_PORT:-587}]: " input
     OUTLINE_SOCAT_SMTP_PORT=${input:-${OUTLINE_SOCAT_SMTP_PORT:-587}}
 
-    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
-    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
-
-    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}]: " input
-    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}}
-
-    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}]: " input
-    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}}
-
+    echo ""
+    echo "app-smtp:"
+    
     read -p "OUTLINE_APP_SMTP_USERNAME [${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}]: " input
     OUTLINE_APP_SMTP_USERNAME=${input:-${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}}
 
@@ -63,12 +66,28 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_APP_SMTP_SECURE [${OUTLINE_APP_SMTP_SECURE:-false}]: " input
     OUTLINE_APP_SMTP_SECURE=${input:-${OUTLINE_APP_SMTP_SECURE:-false}}
+
+    echo ""
+    echo "app:"
+    
+    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
+    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
+
+    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}]: " input
+    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}}
+
+    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}]: " input
+    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}}
 }
 
 # Display configuration nicely and ask for user confirmation
 confirm_and_save_configuration() {
     CONFIG_LINES=(
+        "# redis"
+        "OUTLINE_REDIS_VERSION=${OUTLINE_REDIS_VERSION}"
+        ""
         "# postgres"
+        "OUTLINE_POSTGRES_VERSION=${OUTLINE_POSTGRES_VERSION}"
         "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
         "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
         "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
@@ -77,18 +96,19 @@ confirm_and_save_configuration() {
         "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
         "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
         ""
-        "# Outline app"
-        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
-        ""
-        "# Secrets"
-        "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
-        "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
-        ""
         "# SMTP"
         "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
         "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
         "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
         "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
+        ""
+        "# Outline app"
+        "OUTLINE_APP_VERSION=${OUTLINE_APP_VERSION}"
+        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
+        ""
+        "# Secrets"
+        "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
+        "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
     )
 
     echo ""
