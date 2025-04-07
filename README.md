@@ -14,12 +14,7 @@ cd /docker/outline
 
 # Clone the main Outline project
 git clone https://github.com/jordimock/docker-compose-outline.git .
-
-# Clone the backup tool into ./backup-tool/
-git clone https://github.com/jordimock/backup-tool.git ./backup-tool
 ```
-
-`backup-tool` is used for automated backups of important volumes, including configs and persistent data.
 
 
 ### 2. Create Docker Network and Set Up Reverse Proxy
