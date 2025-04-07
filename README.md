@@ -61,7 +61,7 @@ docker ps
 Your Outline instance should now be operational.
 
 
-### 5. Backup
+## Backup instructions
 
 To back up your Outline deployment located at `/docker/outline`, follow these steps:
 
