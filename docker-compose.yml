@@ -1,7 +1,7 @@
 services:
 
   outline-postgres:
-    image: postgres:14
+    image: postgres:${OUTLINE_POSTGRES_VERSION}
     container_name: outline-postgres
     restart: unless-stopped
 
@@ -25,7 +25,7 @@ services:
 
 
   outline-redis:
-    image: redis:6
+    image: redis:${OUTLINE_REDIS_VERSION}
     container_name: outline-redis
     restart: unless-stopped
 

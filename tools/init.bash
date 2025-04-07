@@ -11,6 +11,10 @@ ENV_FILE="${SCRIPT_DIR}/../.env"
 
 # Generate secure random defaults
 generate_defaults() {
+    OUTLINE_REDIS_VERSION=6
+    OUTLINE_POSTGRES_VERSION=14
+    OUTLINE_APP_VERSION="0.82.0"
+
     POSTGRES_PASSWORD=$(openssl rand -hex 32)
     SECRET_KEY=$(openssl rand -hex 32)
     UTILS_SECRET=$(openssl rand -hex 32)
@@ -29,7 +33,7 @@ prompt_for_configuration() {
     echo ""
     
     echo "postgres:"
-
+    
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
@@ -66,9 +70,6 @@ prompt_for_configuration() {
     echo ""
     echo "app:"
     
-    read -p "OUTLINE_APP_VERSION [${OUTLINE_APP_VERSION:-0.82.0}]: " input
-    OUTLINE_APP_VERSION=${input:-${OUTLINE_APP_VERSION:-0.82.0}}
-
     read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
     OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
 
@@ -82,7 +83,11 @@ prompt_for_configuration() {
 # Display configuration nicely and ask for user confirmation
 confirm_and_save_configuration() {
     CONFIG_LINES=(
+        "# redis"
+        "OUTLINE_REDIS_VERSION=${OUTLINE_REDIS_VERSION}"
+        ""
         "# postgres"
+        "OUTLINE_POSTGRES_VERSION=${OUTLINE_POSTGRES_VERSION}"
         "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
         "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
         "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
