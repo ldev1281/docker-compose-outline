@@ -19,7 +19,7 @@ git clone https://github.com/jordimock/docker-compose-outline.git .
 
 ### 2. Create Docker Network and Set Up Reverse Proxy
 
-This project is designed to work with the reverse proxy configuration provided by [docker-compose-caddy](https://github.com/jordimock/docker-compose-caddy). To enable this integration, follow these steps:
+This project is designed to work with the reverse proxy configuration provided by [`docker-compose-caddy`](https://github.com/jordimock/docker-compose-caddy). To enable this integration, follow these steps:
 
 1. **Create the shared Docker network** (if it doesn't already exist):
 
@@ -27,7 +27,7 @@ This project is designed to work with the reverse proxy configuration provided b
    docker network create --driver bridge caddy-outline
    ```
 
-2. **Set up the Caddy reverse proxy** by following the instructions in the [docker-compose-caddy](https://github.com/jordimock/docker-compose-caddy).  
+2. **Set up the Caddy reverse proxy** by following the instructions in the [`docker-compose-caddy`](https://github.com/jordimock/docker-compose-caddy).  
 
 Once Caddy is installed, it will automatically detect the Outline container via the `caddy-outline` network and route traffic accordingly.
 
