@@ -61,30 +61,24 @@ docker ps
 Your Outline instance should now be operational.
 
 
-## Backup instructions
 
-To back up your Outline deployment located at `/docker/outline`, follow these steps:
+## Creating a Backup Task for Outline
 
-1. **Stop the application:**
+To create a backup task for your Outline deployment using [`backup-tool`](https://github.com/jordimock/backup-tool), add a new task file to `/etc/limbo-backup/rsync.conf.d/`:
 
-   ```bash
-   cd /docker/outline
-   docker compose down
-   ```
+```bash
+sudo nano /etc/limbo-backup/rsync.conf.d/10-outline.conf.bash
+```
 
-2. **Copy the following to your backup directory:**
+Paste the following contents:
 
-   ```bash
-   cp -a .env /path/to/backup/dir/
-   cp -a vol/ /path/to/backup/dir/vol/
-   ```
+```bash
+CMD_BEFORE_BACKUP="docker compose --project-directory /docker/outline down"
+CMD_AFTER_BACKUP="docker compose --project-directory /docker/outline up -d"
 
-   Replace `/path/to/backup/dir/` with your actual backup location.
+INCLUDE_PATHS=(
+  "/docker/outline/.env"
+  "/docker/outline/vol"
+)
+```
 
-3. **Start the application again:**
-
-   ```bash
-   docker compose up -d
-   ```
-
-You can automate this process using the [`backup-tool`](https://github.com/jordimock/backup-tool), which is already included in this project.
