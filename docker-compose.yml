@@ -1,105 +1,82 @@
 services:
-
   outline-postgres:
     image: postgres:${OUTLINE_POSTGRES_VERSION}
     container_name: outline-postgres
     restart: unless-stopped
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${OUTLINE_POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
-
     environment:
       POSTGRES_USER: ${OUTLINE_POSTGRES_USER}
       POSTGRES_PASSWORD: ${OUTLINE_POSTGRES_PASSWORD}
       POSTGRES_DB: ${OUTLINE_POSTGRES_DB}
-      
     volumes:
       - ./vol/outline-postgres/var/lib/postgresql/data:/var/lib/postgresql/data
-
     networks:
       - outline-private
-
-
 
   outline-redis:
     image: redis:${OUTLINE_REDIS_VERSION}
     container_name: outline-redis
     restart: unless-stopped
-
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 3
-
     volumes:
-      # Configuration
       - ./outline-redis/usr/local/etc/redis/:/usr/local/etc/redis/
-      # Dynamicaly allocated data
       - ./vol/outline-redis/data/:/data/
-
     networks:
       - outline-private
-
-
 
   outline-socat-smtp:
-    image: alpine/socat
-    container_name: outline-socat-smtp
+    image: ghcr.io/ldev1281/docker-socat-socks5h:latest
+    container_name: outline-socat-socks5h-smtp
     restart: unless-stopped
-
-    command: tcp-listen:587,fork,reuseaddr tcp-connect:${OUTLINE_SOCAT_SMTP_HOST}:${OUTLINE_SOCAT_SMTP_PORT}
-
+    environment:
+      LISTEN_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
+      TARGET_HOST: ${OUTLINE_SOCAT_SMTP_HOST}
+      TARGET_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
+      SOCKS5H_HOST: ${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}
+      SOCKS5H_PORT: ${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}
+      SOCKS5H_USER: ${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}
+      SOCKS5H_PASSWORD: ${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}
     networks:
-      - outline-universe    
+      - outline-universe
       - outline-private
-
-
 
   outline-app:
     image: outlinewiki/outline:${OUTLINE_APP_VERSION}
     container_name: outline-app
     restart: unless-stopped
-
     depends_on:
       - outline-postgres
       - outline-redis
-
     environment:
-      # URL where your Outline app will be available
       URL: ${OUTLINE_APP_URL}
       COLLABORATION_URL: ${OUTLINE_APP_URL}
-      # Security keys
       SECRET_KEY: ${OUTLINE_APP_SECRET_KEY}
+      FORCE_HTTPS: false
       UTILS_SECRET: ${OUTLINE_APP_UTILS_SECRET}
-      # PostgreSQL database connection
       DATABASE_URL: postgres://${OUTLINE_POSTGRES_USER}:${OUTLINE_POSTGRES_PASSWORD}@outline-postgres:5432/${OUTLINE_POSTGRES_DB}
       PGSSLMODE: disable
-      # Redis connection
       REDIS_URL: redis://outline-redis:6379
-      # SMTP configuration
       SMTP_HOST: outline-socat-smtp
-      SMTP_PORT: 587
-      #
-      SMTP_USERNAME: ${OUTLINE_APP_SMTP_USERNAME}
-      SMTP_PASSWORD: ${OUTLINE_APP_SMTP_PASSWORD}
-      SMTP_FROM_EMAIL: ${OUTLINE_APP_SMTP_FROM_EMAIL}
-      SMTP_SECURE: ${OUTLINE_APP_SMTP_SECURE}
-
+      SMTP_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
+      SMTP_USERNAME: ${OUTLINE_SMTP_USER}
+      SMTP_PASSWORD: ${OUTLINE_SMTP_PASS}
+      SMTP_FROM_EMAIL: ${OUTLINE_SMTP_FROM}
+      SMTP_SECURE: ${OUTLINE_SMTP_SECURE}
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
-
     networks:
       - outline-private
       - caddy-outline
 
-
-
 networks:
-
   caddy-outline:
     name: caddy-outline
     external: true

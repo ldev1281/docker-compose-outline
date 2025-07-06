@@ -1,23 +1,21 @@
-#!/bin/bash
-set -e
-
-# Get the absolute path of script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE="${SCRIPT_DIR}/../.env"
-
 # -------------------------------------
 # Outline setup script
 # -------------------------------------
 
-OUTLINE_REDIS_VERSION=6
+# Get the absolute path of script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../.env"
+VOL_DIR="${SCRIPT_DIR}/../vol/"
+
 OUTLINE_POSTGRES_VERSION=14
+OUTLINE_REDIS_VERSION=6
 OUTLINE_APP_VERSION="0.82.0"
 
 # Generate secure random defaults
 generate_defaults() {
-    POSTGRES_PASSWORD=$(openssl rand -hex 32)
-    SECRET_KEY=$(openssl rand -hex 32)
-    UTILS_SECRET=$(openssl rand -hex 32)
+    OUTLINE_POSTGRES_PASSWORD=$(openssl rand -hex 32)
+    OUTLINE_APP_SECRET_KEY=$(openssl rand -hex 32)
+    OUTLINE_APP_UTILS_SECRET=$(openssl rand -hex 32)
 }
 
 # Load existing configuration from .env file
@@ -31,120 +29,121 @@ load_existing_env() {
 prompt_for_configuration() {
     echo "Please enter configuration values (press Enter to keep current/default value):"
     echo ""
-    
-    echo "postgres:"
-    
+
+    echo "PostgreSQL settings:"
     read -p "OUTLINE_POSTGRES_USER [${OUTLINE_POSTGRES_USER:-outline}]: " input
     OUTLINE_POSTGRES_USER=${input:-${OUTLINE_POSTGRES_USER:-outline}}
 
-    read -p "OUTLINE_POSTGRES_PASSWORD [${OUTLINE_POSTGRES_PASSWORD:-$POSTGRES_PASSWORD}]: " input
-    OUTLINE_POSTGRES_PASSWORD=${input:-${OUTLINE_POSTGRES_PASSWORD:-$POSTGRES_PASSWORD}}
+    read -p "OUTLINE_POSTGRES_PASSWORD [${OUTLINE_POSTGRES_PASSWORD:-$OUTLINE_POSTGRES_PASSWORD}]: " input
+    OUTLINE_POSTGRES_PASSWORD=${input:-${OUTLINE_POSTGRES_PASSWORD:-$OUTLINE_POSTGRES_PASSWORD}}
 
     read -p "OUTLINE_POSTGRES_DB [${OUTLINE_POSTGRES_DB:-outline}]: " input
     OUTLINE_POSTGRES_DB=${input:-${OUTLINE_POSTGRES_DB:-outline}}
 
     echo ""
-    echo "socat-smtp:"
-    
+    echo "Outline settings:"
+    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-http://outline.example.com}]: " input
+    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-http://outline.example.com}}
+
+    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$OUTLINE_APP_SECRET_KEY}]: " input
+    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$OUTLINE_APP_SECRET_KEY}}
+
+    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}]: " input
+    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}}
+
+    read -p "OUTLINE_SMTP_USER [${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}]: " input
+    OUTLINE_SMTP_USER=${input:-${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}}
+
+    read -p "OUTLINE_SMTP_PASS [${OUTLINE_SMTP_PASS:-password}]: " input
+    OUTLINE_SMTP_PASS=${input:-${OUTLINE_SMTP_PASS:-password}}
+
+    read -p "OUTLINE_SMTP_FROM [${OUTLINE_SMTP_FROM:-outline@sandbox123.mailgun.org}]: " input
+    OUTLINE_SMTP_FROM=${input:-${OUTLINE_SMTP_FROM:-outline@sandbox123.mailgun.org}}
+
+    read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-false}]: " input
+    OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-false}}
+
     read -p "OUTLINE_SOCAT_SMTP_HOST [${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SOCAT_SMTP_HOST=${input:-${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}}
 
     read -p "OUTLINE_SOCAT_SMTP_PORT [${OUTLINE_SOCAT_SMTP_PORT:-587}]: " input
     OUTLINE_SOCAT_SMTP_PORT=${input:-${OUTLINE_SOCAT_SMTP_PORT:-587}}
 
-    echo ""
-    echo "app-smtp:"
-    
-    read -p "OUTLINE_APP_SMTP_USERNAME [${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}]: " input
-    OUTLINE_APP_SMTP_USERNAME=${input:-${OUTLINE_APP_SMTP_USERNAME:-your_smtp_username}}
+    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_HOST [${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}]: " input
+    OUTLINE_SOCAT_SMTP_SOCKS5H_HOST=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}}
 
-    read -p "OUTLINE_APP_SMTP_PASSWORD [${OUTLINE_APP_SMTP_PASSWORD:-your_smtp_password}]: " input
-    OUTLINE_APP_SMTP_PASSWORD=${input:-${OUTLINE_APP_SMTP_PASSWORD:-your_smtp_password}}
+    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_PORT [${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}]: " input
+    OUTLINE_SOCAT_SMTP_SOCKS5H_PORT=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}}
 
-    read -p "OUTLINE_APP_SMTP_FROM_EMAIL [${OUTLINE_APP_SMTP_FROM_EMAIL:-noreply@your-domain.com}]: " input
-    OUTLINE_APP_SMTP_FROM_EMAIL=${input:-${OUTLINE_APP_SMTP_FROM_EMAIL:-noreply@your-domain.com}}
+    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_USER [${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}]: " input
+    OUTLINE_SOCAT_SMTP_SOCKS5H_USER=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}}
 
-    read -p "OUTLINE_APP_SMTP_SECURE [${OUTLINE_APP_SMTP_SECURE:-false}]: " input
-    OUTLINE_APP_SMTP_SECURE=${input:-${OUTLINE_APP_SMTP_SECURE:-false}}
-
-    echo ""
-    echo "app:"
-    
-    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-https://your-domain.com}]: " input
-    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-https://your-domain.com}}
-
-    read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}]: " input
-    OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$SECRET_KEY}}
-
-    read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}]: " input
-    OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$UTILS_SECRET}}
+    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD [${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}]: " input
+    OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}}
 }
 
-# Display configuration nicely and ask for user confirmation
+# Display configuration and ask user to confirm
 confirm_and_save_configuration() {
     CONFIG_LINES=(
-        "# redis"
-        "OUTLINE_REDIS_VERSION=${OUTLINE_REDIS_VERSION}"
-        ""
-        "# postgres"
+        "# PostgreSQL"
         "OUTLINE_POSTGRES_VERSION=${OUTLINE_POSTGRES_VERSION}"
         "OUTLINE_POSTGRES_USER=${OUTLINE_POSTGRES_USER}"
         "OUTLINE_POSTGRES_PASSWORD=${OUTLINE_POSTGRES_PASSWORD}"
         "OUTLINE_POSTGRES_DB=${OUTLINE_POSTGRES_DB}"
         ""
-        "# SMTP settings"
-        "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
-        "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
+        "# Redis"
+        "OUTLINE_REDIS_VERSION=${OUTLINE_REDIS_VERSION}"
         ""
-        "# SMTP"
-        "OUTLINE_APP_SMTP_USERNAME=${OUTLINE_APP_SMTP_USERNAME}"
-        "OUTLINE_APP_SMTP_PASSWORD=${OUTLINE_APP_SMTP_PASSWORD}"
-        "OUTLINE_APP_SMTP_FROM_EMAIL=${OUTLINE_APP_SMTP_FROM_EMAIL}"
-        "OUTLINE_APP_SMTP_SECURE=${OUTLINE_APP_SMTP_SECURE}"
-        ""
-        "# Outline app"
+        "# Outline"
         "OUTLINE_APP_VERSION=${OUTLINE_APP_VERSION}"
         "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
-        ""
-        "# Secrets"
         "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
         "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
+        ""
+        "# SMTP Outline"
+        "OUTLINE_SMTP_USER=${OUTLINE_SMTP_USER}"
+        "OUTLINE_SMTP_PASS=${OUTLINE_SMTP_PASS}"
+        "OUTLINE_SMTP_FROM=${OUTLINE_SMTP_FROM}"
+        "OUTLINE_SMTP_SECURE=${OUTLINE_SMTP_SECURE}"
+        ""
+        "# SMTP socat proxy settings"
+        "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
+        "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
+        "OUTLINE_SOCAT_SMTP_SOCKS5H_HOST=${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST}"
+        "OUTLINE_SOCAT_SMTP_SOCKS5H_PORT=${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT}"
+        "OUTLINE_SOCAT_SMTP_SOCKS5H_USER=${OUTLINE_SOCAT_SMTP_SOCKS5H_USER}"
+        "OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD=${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD}"
     )
 
     echo ""
     echo "The following environment configuration will be saved:"
     echo "-----------------------------------------------------"
-
     for line in "${CONFIG_LINES[@]}"; do
         echo "$line"
     done
-
     echo "-----------------------------------------------------"
-    echo "" 
+    echo ""
 
-    #
     read -p "Proceed with this configuration? (y/n): " CONFIRM
-    echo "" 
+    echo ""
     if [[ "$CONFIRM" != "y" ]]; then
         echo "Configuration aborted by user."
-        echo "" 
+        echo ""
         exit 1
     fi
 
-    #
     printf "%s\n" "${CONFIG_LINES[@]}" > "$ENV_FILE"
     echo ".env file saved to $ENV_FILE"
-    echo "" 
+    echo ""
 }
-
 
 # Set up containers and initialize the database
 setup_containers() {
     echo "Stopping all containers and removing volumes..."
-    docker compose down -v
+    docker compose down -v || true
 
     echo "Clearing volume data..."
-    rm -rf vol/outline-postgres vol/outline-tor vol/outline-app vol/outline-redis/data
+    [ -d "$VOL_DIR" ] && rm -rf "$VOL_DIR"/*
 
     echo "Starting containers..."
     docker compose up -d
@@ -152,19 +151,17 @@ setup_containers() {
     echo "Waiting 60 seconds for services to initialize..."
     sleep 60
 
-    echo "Seeding the database with email: ${OUTLINE_APP_SMTP_FROM_EMAIL}"
-    docker compose run --rm outline-app node build/server/scripts/seed.js "${OUTLINE_APP_SMTP_FROM_EMAIL}"
-    echo "" 
-
+    echo "Seeding the database with email: ${OUTLINE_SMTP_FROM}"
+    docker compose run --rm outline-app node build/server/scripts/seed.js "${OUTLINE_SMTP_FROM}"
+    echo ""
     echo "Seeding complete. Please copy the activation link from the console output and open it in your browser."
-    echo "" 
+    echo ""
 }
 
 # -----------------------------------
 # Main logic
 # -----------------------------------
 
-# Check if .env file exists, load or generate defaults accordingly
 if [ -f "$ENV_FILE" ]; then
     echo ".env file found. Loading existing configuration."
     load_existing_env
@@ -173,11 +170,6 @@ else
     generate_defaults
 fi
 
-# Always prompt user for configuration confirmation
 prompt_for_configuration
-
-# Ask user confirmation and save
 confirm_and_save_configuration
-
-# Run container setup
 setup_containers
