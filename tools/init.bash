@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
 # -------------------------------------
 # Outline setup script
 # -------------------------------------
@@ -51,6 +54,20 @@ prompt_for_configuration() {
     read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}]: " input
     OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}}
 
+    read -p "OUTLINE_FORCE_HTTPS [${OUTLINE_FORCE_HTTPS:-false}]: " input
+    OUTLINE_FORCE_HTTPS=${input:-${OUTLINE_FORCE_HTTPS:-false}}
+
+    read -p "OUTLINE_NODE_ENV [${OUTLINE_NODE_ENV:-production}]: " input
+    OUTLINE_NODE_ENV=${input:-${OUTLINE_NODE_ENV:-production}}
+
+    echo ""
+    echo "SMTP settings:"
+    read -p "OUTLINE_SMTP_HOST [${OUTLINE_SMTP_HOST:-smtp.mailgun.org}]: " input
+    OUTLINE_SMTP_HOST=${input:-${OUTLINE_SMTP_HOST:-smtp.mailgun.org}}
+
+    read -p "OUTLINE_SMTP_PORT [${OUTLINE_SMTP_PORT:-587}]: " input
+    OUTLINE_SMTP_PORT=${input:-${OUTLINE_SMTP_PORT:-587}}
+
     read -p "OUTLINE_SMTP_USER [${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}]: " input
     OUTLINE_SMTP_USER=${input:-${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}}
 
@@ -62,24 +79,6 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-false}]: " input
     OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-false}}
-
-    read -p "OUTLINE_SOCAT_SMTP_HOST [${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}]: " input
-    OUTLINE_SOCAT_SMTP_HOST=${input:-${OUTLINE_SOCAT_SMTP_HOST:-smtp.mailgun.org}}
-
-    read -p "OUTLINE_SOCAT_SMTP_PORT [${OUTLINE_SOCAT_SMTP_PORT:-587}]: " input
-    OUTLINE_SOCAT_SMTP_PORT=${input:-${OUTLINE_SOCAT_SMTP_PORT:-587}}
-
-    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_HOST [${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}]: " input
-    OUTLINE_SOCAT_SMTP_SOCKS5H_HOST=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}}
-
-    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_PORT [${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}]: " input
-    OUTLINE_SOCAT_SMTP_SOCKS5H_PORT=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}}
-
-    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_USER [${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}]: " input
-    OUTLINE_SOCAT_SMTP_SOCKS5H_USER=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}}
-
-    read -p "OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD [${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}]: " input
-    OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD=${input:-${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}}
 }
 
 # Display configuration and ask user to confirm
@@ -99,20 +98,16 @@ confirm_and_save_configuration() {
         "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
         "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
         "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
+        "OUTLINE_FORCE_HTTPS=${OUTLINE_FORCE_HTTPS}"
+        "OUTLINE_NODE_ENV=${OUTLINE_NODE_ENV}"
         ""
         "# SMTP Outline"
+        "OUTLINE_SMTP_HOST=${OUTLINE_SMTP_HOST}"
+        "OUTLINE_SMTP_PORT=${OUTLINE_SMTP_PORT}"
         "OUTLINE_SMTP_USER=${OUTLINE_SMTP_USER}"
         "OUTLINE_SMTP_PASS=${OUTLINE_SMTP_PASS}"
         "OUTLINE_SMTP_FROM=${OUTLINE_SMTP_FROM}"
         "OUTLINE_SMTP_SECURE=${OUTLINE_SMTP_SECURE}"
-        ""
-        "# SMTP socat proxy settings"
-        "OUTLINE_SOCAT_SMTP_HOST=${OUTLINE_SOCAT_SMTP_HOST}"
-        "OUTLINE_SOCAT_SMTP_PORT=${OUTLINE_SOCAT_SMTP_PORT}"
-        "OUTLINE_SOCAT_SMTP_SOCKS5H_HOST=${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST}"
-        "OUTLINE_SOCAT_SMTP_SOCKS5H_PORT=${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT}"
-        "OUTLINE_SOCAT_SMTP_SOCKS5H_USER=${OUTLINE_SOCAT_SMTP_SOCKS5H_USER}"
-        "OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD=${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD}"
     )
 
     echo ""

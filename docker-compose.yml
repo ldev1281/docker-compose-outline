@@ -32,22 +32,6 @@ services:
     networks:
       - outline-private
 
-  outline-socat-smtp:
-    image: ghcr.io/ldev1281/docker-socat-socks5h:latest
-    container_name: outline-socat-socks5h-smtp
-    restart: unless-stopped
-    environment:
-      LISTEN_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
-      TARGET_HOST: ${OUTLINE_SOCAT_SMTP_HOST}
-      TARGET_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
-      SOCKS5H_HOST: ${OUTLINE_SOCAT_SMTP_SOCKS5H_HOST:-}
-      SOCKS5H_PORT: ${OUTLINE_SOCAT_SMTP_SOCKS5H_PORT:-}
-      SOCKS5H_USER: ${OUTLINE_SOCAT_SMTP_SOCKS5H_USER:-}
-      SOCKS5H_PASSWORD: ${OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD:-}
-    networks:
-      - outline-universe
-      - outline-private
-
   outline-app:
     image: outlinewiki/outline:${OUTLINE_APP_VERSION}
     container_name: outline-app
@@ -59,13 +43,14 @@ services:
       URL: ${OUTLINE_APP_URL}
       COLLABORATION_URL: ${OUTLINE_APP_URL}
       SECRET_KEY: ${OUTLINE_APP_SECRET_KEY}
-      FORCE_HTTPS: false
       UTILS_SECRET: ${OUTLINE_APP_UTILS_SECRET}
+      FORCE_HTTPS: ${OUTLINE_FORCE_HTTPS}
+      NODE_ENV: ${OUTLINE_NODE_ENV}
       DATABASE_URL: postgres://${OUTLINE_POSTGRES_USER}:${OUTLINE_POSTGRES_PASSWORD}@outline-postgres:5432/${OUTLINE_POSTGRES_DB}
       PGSSLMODE: disable
       REDIS_URL: redis://outline-redis:6379
-      SMTP_HOST: outline-socat-smtp
-      SMTP_PORT: ${OUTLINE_SOCAT_SMTP_PORT}
+      SMTP_HOST: ${OUTLINE_SMTP_HOST}
+      SMTP_PORT: ${OUTLINE_SMTP_PORT}
       SMTP_USERNAME: ${OUTLINE_SMTP_USER}
       SMTP_PASSWORD: ${OUTLINE_SMTP_PASS}
       SMTP_FROM_EMAIL: ${OUTLINE_SMTP_FROM}
@@ -73,18 +58,14 @@ services:
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
     networks:
+      - proxy-client-outline
       - outline-private
-      - caddy-outline
 
 networks:
-  caddy-outline:
-    name: caddy-outline
+  proxy-client-outline:
+    name: proxy-client-outline
     external: true
-
-  outline-universe:
-    name: outline-universe
-    driver: bridge
-
+    
   outline-private:
     name: outline-private
     driver: bridge

@@ -21,7 +21,7 @@ This project is designed to work with the reverse proxy configuration provided b
 
 1. **Create the shared Docker network** (if it doesn't already exist):
 
-        docker network create --driver bridge caddy-outline
+        docker network create --driver bridge proxy-client-outline
 
 2. **Set up the Caddy reverse proxy** by following the instructions in the [`docker-compose-caddy`](https://github.com/ldev1281/docker-compose-caddy) repository.  
 
@@ -31,27 +31,25 @@ Once Caddy is installed, it will automatically detect the Outline container via 
 
 Configuration Variables:
 
-| Variable Name                          | Description                                                    | Default Value                            |
-|----------------------------------------|----------------------------------------------------------------|------------------------------------------|
-| `OUTLINE_APP_VERSION`                 | Docker image tag for Outline                                   | `0.82.0`                                  |
-| `OUTLINE_APP_URL`                     | Public domain name for Outline                                 | `https://wiki.example.com`               |
-| `OUTLINE_APP_SECRET_KEY`             | Application secret for signing sessions                        | *(auto-generated)*                       |
-| `OUTLINE_APP_UTILS_SECRET`           | Secret key for utility scripts                                 | *(auto-generated)*                       |
-| `OUTLINE_POSTGRES_VERSION`           | Docker image tag for PostgreSQL                                | `14`                                     |
-| `OUTLINE_POSTGRES_USER`              | PostgreSQL username                                            | `outline`                                |
-| `OUTLINE_POSTGRES_PASSWORD`          | PostgreSQL password                                            | *(auto-generated or manual)*             |
-| `OUTLINE_POSTGRES_DB`                | PostgreSQL database name                                       | `outline`                                |
-| `OUTLINE_REDIS_VERSION`              | Docker image tag for Redis                                     | `6`                                      |
-| `OUTLINE_SMTP_USER`                  | SMTP username for sending email sign-in links                  | `postmaster@sandbox123.mailgun.org`      |
-| `OUTLINE_SMTP_PASS`                  | SMTP password or app-password                                  | `password`                               |
-| `OUTLINE_SMTP_FROM`                  | SMTP sender address                                            | `outline@sandbox123.mailgun.org`         |
-| `OUTLINE_SMTP_SECURE`               | Whether to use TLS/SSL (`true`) or STARTTLS (`false`)          | `false`                                  |
-| `OUTLINE_SOCAT_SMTP_HOST`            | Target SMTP host (used by socat proxy container)               | `smtp.mailgun.org`                       |
-| `OUTLINE_SOCAT_SMTP_PORT`            | SMTP port and proxy listen port                                | `587`                                    |
-| `OUTLINE_SOCAT_SMTP_SOCKS5H_HOST`     | SOCKS5h proxy host (optional)                                  | *(empty)*                                |
-| `OUTLINE_SOCAT_SMTP_SOCKS5H_PORT`     | SOCKS5h proxy port (optional)                                  | *(empty)*                                |
-| `OUTLINE_SOCAT_SMTP_SOCKS5H_USER`     | SOCKS5h proxy username (optional)                              | *(empty)*                                |
-| `OUTLINE_SOCAT_SMTP_SOCKS5H_PASSWORD` | SOCKS5h proxy password (optional)                              | *(empty)*                                |
+| Variable Name                | Description                                                    | Default Value                            |
+|-----------------------------|----------------------------------------------------------------|------------------------------------------|
+| `OUTLINE_APP_VERSION`       | Docker image tag for Outline                                   | `0.82.0`                                 |
+| `OUTLINE_APP_URL`           | Public domain name for Outline                                 | `https://wiki.example.com`              |
+| `OUTLINE_APP_SECRET_KEY`    | Application secret for signing sessions                        | *(auto-generated)*                       |
+| `OUTLINE_APP_UTILS_SECRET`  | Secret key for utility scripts                                 | *(auto-generated)*                       |
+| `OUTLINE_FORCE_HTTPS`       | Whether to enforce HTTPS inside the app (`true` or `false`)    | `false`                                  |
+| `OUTLINE_NODE_ENV`          | Node.js environment (`production`, `development`, etc.)        | `production`                             |
+| `OUTLINE_POSTGRES_VERSION`  | Docker image tag for PostgreSQL                                | `14`                                     |
+| `OUTLINE_POSTGRES_USER`     | PostgreSQL username                                            | `outline`                                |
+| `OUTLINE_POSTGRES_PASSWORD` | PostgreSQL password                                            | *(auto-generated or manual)*             |
+| `OUTLINE_POSTGRES_DB`       | PostgreSQL database name                                       | `outline`                                |
+| `OUTLINE_REDIS_VERSION`     | Docker image tag for Redis                                     | `6`                                      |
+| `OUTLINE_SMTP_HOST`         | SMTP server hostname                                           | `smtp.mailgun.org`                       |
+| `OUTLINE_SMTP_PORT`         | SMTP port (usually 587 for STARTTLS or 465 for SSL)            | `587`                                    |
+| `OUTLINE_SMTP_USER`         | SMTP username for sending email sign-in links                  | `postmaster@sandbox123.mailgun.org`      |
+| `OUTLINE_SMTP_PASS`         | SMTP password or app-password                                  | `password`                               |
+| `OUTLINE_SMTP_FROM`         | SMTP sender address                                            | `outline@sandbox123.mailgun.org`         |
+| `OUTLINE_SMTP_SECURE`       | Whether to use TLS/SSL (`true`) or STARTTLS (`false`)          | `false`                                  |
 
 To configure and launch all required services, run the provided script:
 
@@ -112,7 +110,25 @@ Outline and its dependencies use the following bind-mounted volumes for data per
 ```
 
 
+## Creating a Backup Task for Outline
 
+To create a backup task for your Outline deployment using [`backup-tool`](https://github.com/jordimock/backup-tool), add a new task file to `/etc/limbo-backup/rsync.conf.d/`:
+
+```bash
+sudo nano /etc/limbo-backup/rsync.conf.d/10-outline.conf.bash
+```
+
+Paste the following contents:
+
+```bash
+CMD_BEFORE_BACKUP="docker compose --project-directory /docker/outline down"
+CMD_AFTER_BACKUP="docker compose --project-directory /docker/outline up -d"
+
+INCLUDE_PATHS=(
+  "/docker/outline/.env"
+  "/docker/outline/vol"
+)
+```
 ## License
 
 Licensed under the Prostokvashino License. See [LICENSE](LICENSE) for details.
