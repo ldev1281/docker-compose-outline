@@ -60,14 +60,14 @@ services:
       OIDC_AUTH_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/auth}
       OIDC_TOKEN_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/token}
       OIDC_USERINFO_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/userinfo}
-      OIDC_LOGOUT_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/logout}
+      #OIDC_LOGOUT_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/logout}
       OIDC_SCOPES: ${OUTLINE_KEYCLOAK_OAUTH:+openid profile email}
       OIDC_DISPLAY_NAME: ${OUTLINE_KEYCLOAK_OAUTH:+OpenID}
       OIDC_USERNAME_CLAIM: ${OUTLINE_KEYCLOAK_OAUTH:+preferred_username}
       OIDC_LOGOUT_ENABLED: ${OUTLINE_KEYCLOAK_OAUTH:+true}
       #OIDC_GROUPS_CLAIM: groups
       #OIDC_GROUPS_ALLOWED: outline-access
-      OIDC_EMAIL_DOMAIN: ${OUTLINE_KEYCLOAK_OAUTH:+""}      
+      #OIDC_EMAIL_DOMAIN: ${OUTLINE_KEYCLOAK_OAUTH:+""}
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
     networks:
