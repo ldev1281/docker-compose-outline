@@ -79,6 +79,28 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-false}]: " input
     OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-false}}
+
+    echo ""
+    # OAuth (Keycloak)
+    echo "Keycloak OAuth settings:"
+    read -p "Enable Keycloak OAuth? (yes/no) [${OUTLINE_KEYCLOAK_OAUTH:-no}]: " input
+    OUTLINE_KEYCLOAK_OAUTH=${input:-${OUTLINE_KEYCLOAK_OAUTH:-no}}
+
+    if [[ "$OUTLINE_KEYCLOAK_OAUTH" == "yes" ]]; then
+        read -p "OUTLINE_KEYCLOAK_REALM [${OUTLINE_KEYCLOAK_REALM:-master}]: " input
+        OUTLINE_KEYCLOAK_REALM=${input:-${OUTLINE_KEYCLOAK_REALM:-master}}
+
+        read -p "OUTLINE_KEYCLOAK_CLIENT_ID [${OUTLINE_KEYCLOAK_CLIENT_ID:-outline}]: " input
+        OUTLINE_KEYCLOAK_CLIENT_ID=${input:-${OUTLINE_KEYCLOAK_CLIENT_ID:-outline}}
+
+        read -p "OUTLINE_KEYCLOAK_SECRET [${OUTLINE_KEYCLOAK_SECRET:-}]: " input
+        OUTLINE_KEYCLOAK_SECRET=${input:-${OUTLINE_KEYCLOAK_SECRET:-}}
+
+        read -p "OUTLINE_KEYCLOAK_SERVER_URL [${OUTLINE_KEYCLOAK_SERVER_URL:-https://auth.example.com}]: " input
+        OUTLINE_KEYCLOAK_SERVER_URL=${input:-${OUTLINE_KEYCLOAK_SERVER_URL:-https://auth.example.com}}
+    else
+        OUTLINE_KEYCLOAK_OAUTH=""
+    fi
 }
 
 # Display configuration and ask user to confirm
@@ -108,6 +130,14 @@ confirm_and_save_configuration() {
         "OUTLINE_SMTP_PASS=${OUTLINE_SMTP_PASS}"
         "OUTLINE_SMTP_FROM=${OUTLINE_SMTP_FROM}"
         "OUTLINE_SMTP_SECURE=${OUTLINE_SMTP_SECURE}"
+        ""
+        "# Outline Keycloak OAuth settings"
+        "# Set OUTLINE_KEYCLOAK_OAUTH empty or comment it out to disable"
+        "OUTLINE_KEYCLOAK_OAUTH=${OUTLINE_KEYCLOAK_OAUTH}"
+        "OUTLINE_KEYCLOAK_REALM=${OUTLINE_KEYCLOAK_REALM:-}"
+        "OUTLINE_KEYCLOAK_CLIENT_ID=${OUTLINE_KEYCLOAK_CLIENT_ID:-}"
+        "OUTLINE_KEYCLOAK_SECRET=${OUTLINE_KEYCLOAK_SECRET:-}"
+        "OUTLINE_KEYCLOAK_SERVER_URL=${OUTLINE_KEYCLOAK_SERVER_URL:-}"
     )
 
     echo ""
@@ -127,7 +157,7 @@ confirm_and_save_configuration() {
         exit 1
     fi
 
-    printf "%s\n" "${CONFIG_LINES[@]}" > "$ENV_FILE"
+    printf "%s\n" "${CONFIG_LINES[@]}" >"$ENV_FILE"
     echo ".env file saved to $ENV_FILE"
     echo ""
 }
