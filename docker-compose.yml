@@ -40,8 +40,8 @@ services:
       - outline-postgres
       - outline-redis
     environment:
-      URL: ${OUTLINE_APP_URL}
-      COLLABORATION_URL: ${OUTLINE_APP_URL}
+      URL: https://${OUTLINE_APP_HOSTNAME}
+      COLLABORATION_URL: https://${OUTLINE_APP_HOSTNAME}
       SECRET_KEY: ${OUTLINE_APP_SECRET_KEY}
       UTILS_SECRET: ${OUTLINE_APP_UTILS_SECRET}
       FORCE_HTTPS: ${OUTLINE_FORCE_HTTPS}

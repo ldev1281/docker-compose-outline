@@ -34,7 +34,7 @@ Configuration Variables:
 | Variable Name                | Description                                                    | Default Value                            |
 |-----------------------------|----------------------------------------------------------------|------------------------------------------|
 | `OUTLINE_APP_VERSION`       | Docker image tag for Outline                                   | `0.82.0`                                 |
-| `OUTLINE_APP_URL`           | Public domain name for Outline                                 | `https://wiki.example.com`              |
+| `OUTLINE_APP_HOSTNAME`      | Public domain name for Outline                                 | `wiki.example.com`                       |
 | `OUTLINE_APP_SECRET_KEY`    | Application secret for signing sessions                        | *(auto-generated)*                       |
 | `OUTLINE_APP_UTILS_SECRET`  | Secret key for utility scripts                                 | *(auto-generated)*                       |
 | `OUTLINE_FORCE_HTTPS`       | Whether to enforce HTTPS inside the app (`true` or `false`)    | `false`                                  |

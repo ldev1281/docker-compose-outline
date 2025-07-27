@@ -45,8 +45,8 @@ prompt_for_configuration() {
 
     echo ""
     echo "Outline settings:"
-    read -p "OUTLINE_APP_URL [${OUTLINE_APP_URL:-http://outline.example.com}]: " input
-    OUTLINE_APP_URL=${input:-${OUTLINE_APP_URL:-http://outline.example.com}}
+    read -p "OUTLINE_APP_HOSTNAME [${OUTLINE_APP_HOSTNAME:-outline.example.com}]: " input
+    OUTLINE_APP_HOSTNAME=${input:-${OUTLINE_APP_HOSTNAME:-outline.example.com}}
 
     read -p "OUTLINE_APP_SECRET_KEY [${OUTLINE_APP_SECRET_KEY:-$OUTLINE_APP_SECRET_KEY}]: " input
     OUTLINE_APP_SECRET_KEY=${input:-${OUTLINE_APP_SECRET_KEY:-$OUTLINE_APP_SECRET_KEY}}
@@ -117,7 +117,7 @@ confirm_and_save_configuration() {
         ""
         "# Outline"
         "OUTLINE_APP_VERSION=${OUTLINE_APP_VERSION}"
-        "OUTLINE_APP_URL=${OUTLINE_APP_URL}"
+        "OUTLINE_APP_HOSTNAME=${OUTLINE_APP_HOSTNAME}"
         "OUTLINE_APP_SECRET_KEY=${OUTLINE_APP_SECRET_KEY}"
         "OUTLINE_APP_UTILS_SECRET=${OUTLINE_APP_UTILS_SECRET}"
         "OUTLINE_FORCE_HTTPS=${OUTLINE_FORCE_HTTPS}"
