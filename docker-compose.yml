@@ -49,25 +49,25 @@ services:
       DATABASE_URL: postgres://${OUTLINE_POSTGRES_USER}:${OUTLINE_POSTGRES_PASSWORD}@outline-postgres:5432/${OUTLINE_POSTGRES_DB}
       PGSSLMODE: disable
       REDIS_URL: redis://outline-redis:6379
+
+      # SMTP
       SMTP_HOST: ${OUTLINE_SMTP_HOST}
       SMTP_PORT: ${OUTLINE_SMTP_PORT}
       SMTP_USERNAME: ${OUTLINE_SMTP_USER}
       SMTP_PASSWORD: ${OUTLINE_SMTP_PASS}
       SMTP_FROM_EMAIL: ${OUTLINE_SMTP_FROM}
       SMTP_SECURE: ${OUTLINE_SMTP_SECURE}
-      OIDC_CLIENT_ID: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_CLIENT_ID}
-      OIDC_CLIENT_SECRET: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SECRET}
-      OIDC_AUTH_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/auth}
-      OIDC_TOKEN_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/token}
-      OIDC_USERINFO_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/userinfo}
-      #OIDC_LOGOUT_URI: ${OUTLINE_KEYCLOAK_OAUTH:+$OUTLINE_KEYCLOAK_SERVER_URL/realms/$OUTLINE_KEYCLOAK_REALM/protocol/openid-connect/logout}
-      OIDC_SCOPES: ${OUTLINE_KEYCLOAK_OAUTH:+openid profile email}
-      OIDC_DISPLAY_NAME: ${OUTLINE_KEYCLOAK_OAUTH:+OpenID}
-      OIDC_USERNAME_CLAIM: ${OUTLINE_KEYCLOAK_OAUTH:+preferred_username}
-      OIDC_LOGOUT_ENABLED: ${OUTLINE_KEYCLOAK_OAUTH:+true}
-      #OIDC_GROUPS_CLAIM: groups
-      #OIDC_GROUPS_ALLOWED: outline-access
-      #OIDC_EMAIL_DOMAIN: ${OUTLINE_KEYCLOAK_OAUTH:+""}
+
+      # OIDC via Authentik
+      OIDC_CLIENT_ID: ${OUTLINE_AUTHENTIK_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OUTLINE_AUTHENTIK_CLIENT_SECRET}
+      OIDC_AUTH_URI: ${OUTLINE_AUTHENTIK_URL}/application/o/authorize/
+      OIDC_TOKEN_URI: ${OUTLINE_AUTHENTIK_URL}/application/o/token/
+      OIDC_USERINFO_URI: ${OUTLINE_AUTHENTIK_URL}/application/o/userinfo/
+      OIDC_SCOPES: openid profile email
+      OIDC_DISPLAY_NAME: Authentik
+      OIDC_USERNAME_CLAIM: preferred_username
+      OIDC_LOGOUT_ENABLED: true
     volumes:
       - ./vol/outline-app/var/lib/outline/:/var/lib/outline/
     networks:
@@ -78,7 +78,7 @@ networks:
   proxy-client-outline:
     name: proxy-client-outline
     external: true
-    
+
   outline-private:
     name: outline-private
     driver: bridge

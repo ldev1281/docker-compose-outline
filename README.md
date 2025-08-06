@@ -31,25 +31,29 @@ Once Caddy is installed, it will automatically detect the Outline container via 
 
 Configuration Variables:
 
-| Variable Name                | Description                                                    | Default Value                            |
-|-----------------------------|----------------------------------------------------------------|------------------------------------------|
-| `OUTLINE_APP_VERSION`       | Docker image tag for Outline                                   | `0.82.0`                                 |
-| `OUTLINE_APP_HOSTNAME`      | Public domain name for Outline                                 | `wiki.example.com`                       |
-| `OUTLINE_APP_SECRET_KEY`    | Application secret for signing sessions                        | *(auto-generated)*                       |
-| `OUTLINE_APP_UTILS_SECRET`  | Secret key for utility scripts                                 | *(auto-generated)*                       |
-| `OUTLINE_FORCE_HTTPS`       | Whether to enforce HTTPS inside the app (`true` or `false`)    | `false`                                  |
-| `OUTLINE_NODE_ENV`          | Node.js environment (`production`, `development`, etc.)        | `production`                             |
-| `OUTLINE_POSTGRES_VERSION`  | Docker image tag for PostgreSQL                                | `14`                                     |
-| `OUTLINE_POSTGRES_USER`     | PostgreSQL username                                            | `outline`                                |
-| `OUTLINE_POSTGRES_PASSWORD` | PostgreSQL password                                            | *(auto-generated or manual)*             |
-| `OUTLINE_POSTGRES_DB`       | PostgreSQL database name                                       | `outline`                                |
-| `OUTLINE_REDIS_VERSION`     | Docker image tag for Redis                                     | `6`                                      |
-| `OUTLINE_SMTP_HOST`         | SMTP server hostname                                           | `smtp.mailgun.org`                       |
-| `OUTLINE_SMTP_PORT`         | SMTP port (usually 587 for STARTTLS or 465 for SSL)            | `587`                                    |
-| `OUTLINE_SMTP_USER`         | SMTP username for sending email sign-in links                  | `postmaster@sandbox123.mailgun.org`      |
-| `OUTLINE_SMTP_PASS`         | SMTP password or app-password                                  | `password`                               |
-| `OUTLINE_SMTP_FROM`         | SMTP sender address                                            | `outline@sandbox123.mailgun.org`         |
-| `OUTLINE_SMTP_SECURE`       | Whether to use TLS/SSL (`true`) or STARTTLS (`false`)          | `false`                                  |
+| Variable Name                     | Description                                                    | Default Value                            |
+|----------------------------------|----------------------------------------------------------------|------------------------------------------|
+| `OUTLINE_APP_VERSION`            | Docker image tag for Outline                                   | `0.82.0`                                 |
+| `OUTLINE_APP_HOSTNAME`           | Public domain name for Outline                                 | `wiki.example.com`                       |
+| `OUTLINE_APP_SECRET_KEY`         | Application secret for signing sessions                        | *(auto-generated)*                       |
+| `OUTLINE_APP_UTILS_SECRET`       | Secret key for utility scripts                                 | *(auto-generated)*                       |
+| `OUTLINE_FORCE_HTTPS`            | Whether to enforce HTTPS inside the app (`true` or `false`)    | `false`                                  |
+| `OUTLINE_NODE_ENV`               | Node.js environment (`production`, `development`, etc.)        | `production`                             |
+| `OUTLINE_POSTGRES_VERSION`       | Docker image tag for PostgreSQL                                | `14`                                     |
+| `OUTLINE_POSTGRES_USER`          | PostgreSQL username                                            | `outline`                                |
+| `OUTLINE_POSTGRES_PASSWORD`      | PostgreSQL password                                            | *(auto-generated or manual)*             |
+| `OUTLINE_POSTGRES_DB`            | PostgreSQL database name                                       | `outline`                                |
+| `OUTLINE_REDIS_VERSION`          | Docker image tag for Redis                                     | `6`                                      |
+| `OUTLINE_SMTP_HOST`              | SMTP server hostname                                           | `smtp.mailgun.org`                       |
+| `OUTLINE_SMTP_PORT`              | SMTP port (587 for STARTTLS, 465 for SSL)                      | `587`                                    |
+| `OUTLINE_SMTP_USER`              | SMTP username for sending email sign-in links                  | `postmaster@sandbox123.mailgun.org`      |
+| `OUTLINE_SMTP_PASS`              | SMTP password or app-password                                  | `password`                               |
+| `OUTLINE_SMTP_FROM`              | SMTP sender address                                            | `outline@sandbox123.mailgun.org`         |
+| `OUTLINE_SMTP_SECURE`            | Whether to use TLS/SSL (`true`) or STARTTLS (`false`)          | `false`                                  |
+| `OUTLINE_AUTHENTIK_CLIENT_ID`    | Authentik OAuth2 Client ID                                     | `outline`                                |
+| `OUTLINE_AUTHENTIK_CLIENT_SECRET`| Authentik OAuth2 Client Secret                                 | *(manual from Authentik UI)*             |
+| `OUTLINE_AUTHENTIK_URL`          | Public base URL of Authentik instance                          | `https://auth.example.com`               |
+
 
 To configure and launch all required services, run the provided script:
 

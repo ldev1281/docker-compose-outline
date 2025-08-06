@@ -65,42 +65,33 @@ prompt_for_configuration() {
     read -p "OUTLINE_SMTP_HOST [${OUTLINE_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SMTP_HOST=${input:-${OUTLINE_SMTP_HOST:-smtp.mailgun.org}}
 
+    read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-true}]: " input
+    OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-true}}    
+
     read -p "OUTLINE_SMTP_PORT [${OUTLINE_SMTP_PORT:-587}]: " input
     OUTLINE_SMTP_PORT=${input:-${OUTLINE_SMTP_PORT:-587}}
 
     read -p "OUTLINE_SMTP_USER [${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}]: " input
     OUTLINE_SMTP_USER=${input:-${OUTLINE_SMTP_USER:-postmaster@sandbox123.mailgun.org}}
 
-    read -p "OUTLINE_SMTP_PASS [${OUTLINE_SMTP_PASS:-password}]: " input
-    OUTLINE_SMTP_PASS=${input:-${OUTLINE_SMTP_PASS:-password}}
-
     read -p "OUTLINE_SMTP_FROM [${OUTLINE_SMTP_FROM:-outline@sandbox123.mailgun.org}]: " input
     OUTLINE_SMTP_FROM=${input:-${OUTLINE_SMTP_FROM:-outline@sandbox123.mailgun.org}}
 
-    read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-false}]: " input
-    OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-false}}
+    read -p "OUTLINE_SMTP_PASS [${OUTLINE_SMTP_PASS:-password}]: " input
+    OUTLINE_SMTP_PASS=${input:-${OUTLINE_SMTP_PASS:-password}}
+
 
     echo ""
-    # OAuth (Keycloak)
-    echo "Keycloak OAuth settings:"
-    read -p "Enable Keycloak OAuth? (yes/no) [${OUTLINE_KEYCLOAK_OAUTH:-no}]: " input
-    OUTLINE_KEYCLOAK_OAUTH=${input:-${OUTLINE_KEYCLOAK_OAUTH:-no}}
+    # OAuth (Authentik)
+    echo "Authentik OIDC settings:"
+    read -p "OUTLINE_AUTHENTIK_CLIENT_ID [${OUTLINE_AUTHENTIK_CLIENT_ID:-outline}]: " input
+    OUTLINE_AUTHENTIK_CLIENT_ID=${input:-${OUTLINE_AUTHENTIK_CLIENT_ID:-outline}}
 
-    if [[ "$OUTLINE_KEYCLOAK_OAUTH" == "yes" ]]; then
-        read -p "OUTLINE_KEYCLOAK_REALM [${OUTLINE_KEYCLOAK_REALM:-master}]: " input
-        OUTLINE_KEYCLOAK_REALM=${input:-${OUTLINE_KEYCLOAK_REALM:-master}}
+    read -p "OUTLINE_AUTHENTIK_CLIENT_SECRET [${OUTLINE_AUTHENTIK_CLIENT_SECRET:-}]: " input
+    OUTLINE_AUTHENTIK_CLIENT_SECRET=${input:-${OUTLINE_AUTHENTIK_CLIENT_SECRET:-}}
 
-        read -p "OUTLINE_KEYCLOAK_CLIENT_ID [${OUTLINE_KEYCLOAK_CLIENT_ID:-outline}]: " input
-        OUTLINE_KEYCLOAK_CLIENT_ID=${input:-${OUTLINE_KEYCLOAK_CLIENT_ID:-outline}}
-
-        read -p "OUTLINE_KEYCLOAK_SECRET [${OUTLINE_KEYCLOAK_SECRET:-}]: " input
-        OUTLINE_KEYCLOAK_SECRET=${input:-${OUTLINE_KEYCLOAK_SECRET:-}}
-
-        read -p "OUTLINE_KEYCLOAK_SERVER_URL [${OUTLINE_KEYCLOAK_SERVER_URL:-https://auth.example.com}]: " input
-        OUTLINE_KEYCLOAK_SERVER_URL=${input:-${OUTLINE_KEYCLOAK_SERVER_URL:-https://auth.example.com}}
-    else
-        OUTLINE_KEYCLOAK_OAUTH=""
-    fi
+    read -p "OUTLINE_AUTHENTIK_URL [${OUTLINE_AUTHENTIK_URL:-https://auth.example.com}]: " input
+    OUTLINE_AUTHENTIK_URL=${input:-${OUTLINE_AUTHENTIK_URL:-https://auth.example.com}}
 }
 
 # Display configuration and ask user to confirm
@@ -131,13 +122,10 @@ confirm_and_save_configuration() {
         "OUTLINE_SMTP_FROM=${OUTLINE_SMTP_FROM}"
         "OUTLINE_SMTP_SECURE=${OUTLINE_SMTP_SECURE}"
         ""
-        "# Outline Keycloak OAuth settings"
-        "# Set OUTLINE_KEYCLOAK_OAUTH empty or comment it out to disable"
-        "OUTLINE_KEYCLOAK_OAUTH=${OUTLINE_KEYCLOAK_OAUTH}"
-        "OUTLINE_KEYCLOAK_REALM=${OUTLINE_KEYCLOAK_REALM:-}"
-        "OUTLINE_KEYCLOAK_CLIENT_ID=${OUTLINE_KEYCLOAK_CLIENT_ID:-}"
-        "OUTLINE_KEYCLOAK_SECRET=${OUTLINE_KEYCLOAK_SECRET:-}"
-        "OUTLINE_KEYCLOAK_SERVER_URL=${OUTLINE_KEYCLOAK_SERVER_URL:-}"
+        "# Outline Authentik OIDC settings"
+        "OUTLINE_AUTHENTIK_CLIENT_ID=${OUTLINE_AUTHENTIK_CLIENT_ID}"
+        "OUTLINE_AUTHENTIK_CLIENT_SECRET=${OUTLINE_AUTHENTIK_CLIENT_SECRET}"
+        "OUTLINE_AUTHENTIK_URL=${OUTLINE_AUTHENTIK_URL}"
     )
 
     echo ""
