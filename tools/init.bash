@@ -54,8 +54,8 @@ prompt_for_configuration() {
     read -p "OUTLINE_APP_UTILS_SECRET [${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}]: " input
     OUTLINE_APP_UTILS_SECRET=${input:-${OUTLINE_APP_UTILS_SECRET:-$OUTLINE_APP_UTILS_SECRET}}
 
-    read -p "OUTLINE_FORCE_HTTPS [${OUTLINE_FORCE_HTTPS:-false}]: " input
-    OUTLINE_FORCE_HTTPS=${input:-${OUTLINE_FORCE_HTTPS:-false}}
+    read -p "OUTLINE_FORCE_HTTPS [${OUTLINE_FORCE_HTTPS:-true}]: " input
+    OUTLINE_FORCE_HTTPS=${input:-${OUTLINE_FORCE_HTTPS:-true}}
 
     read -p "OUTLINE_NODE_ENV [${OUTLINE_NODE_ENV:-production}]: " input
     OUTLINE_NODE_ENV=${input:-${OUTLINE_NODE_ENV:-production}}
