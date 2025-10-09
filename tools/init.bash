@@ -157,6 +157,7 @@ setup_containers() {
 
     echo "Clearing volume data..."
     [ -d "$VOL_DIR" ] && rm -rf "$VOL_DIR"/*
+    mkdir -p "${VOL_DIR}/outline-app/var/lib/outline/data" && chown 1001:1001 "${VOL_DIR}/outline-app/var/lib/outline/data"
 
     echo "Starting containers..."
     docker compose up -d
