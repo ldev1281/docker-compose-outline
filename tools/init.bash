@@ -155,8 +155,19 @@ setup_containers() {
     echo "Stopping all containers and removing volumes..."
     docker compose down -v || true
 
-    echo "Clearing volume data..."
-    [ -d "$VOL_DIR" ] && rm -rf "$VOL_DIR"/*
+       if [ -d "$VOL_DIR" ]; then
+        echo "The 'vol' directory exists:"
+        echo " - In case of a new install type 'y' to clear its contents. WARNING! This will remove all previous configuration files and stored data of the proxy-client."
+        echo " - In case of an upgrade/installing a new application type 'n' (or press Enter)."
+        read -p "Clear it now? (y/N): " CONFIRM
+        echo ""
+        if [[ "$CONFIRM" == "y" ]]; then
+            echo "Clearing 'vol' directory..."
+            rm -rf "${VOL_DIR:?}"/*
+        fi
+    fi
+
+    mkdir -p "${VOL_DIR}/outline-app/var/lib/outline/data" && chown 1001:1001 "${VOL_DIR}/outline-app/var/lib/outline/data"
 
     echo "Starting containers..."
     docker compose up -d
