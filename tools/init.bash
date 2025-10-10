@@ -8,7 +8,7 @@ set -Eeuo pipefail
 # Get the absolute path of script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/../.env"
-VOL_DIR="${SCRIPT_DIR}/../vol/"
+VOL_DIR="${SCRIPT_DIR}/../vol"
 
 OUTLINE_POSTGRES_VERSION=14
 OUTLINE_REDIS_VERSION=6
