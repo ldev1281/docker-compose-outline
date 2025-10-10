@@ -157,7 +157,7 @@ setup_containers() {
 
        if [ -d "$VOL_DIR" ]; then
         echo "The 'vol' directory exists:"
-        echo " - In case of a new install type 'y' to clear its contents. WARNING! This will remove all previous configuration files and stored data of the proxy-client."
+        echo " - In case of a new install type 'y' to clear its contents. WARNING! This will remove all previous configuration files and stored data."
         echo " - In case of an upgrade/installing a new application type 'n' (or press Enter)."
         read -p "Clear it now? (y/N): " CONFIRM
         echo ""
