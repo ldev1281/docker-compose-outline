@@ -12,7 +12,7 @@ VOL_DIR="${SCRIPT_DIR}/../vol"
 
 OUTLINE_POSTGRES_VERSION=14
 OUTLINE_REDIS_VERSION=6
-OUTLINE_APP_VERSION="0.82.0"
+CURRENT_OUTLINE_APP_VERSION="0.87.4"
 
 # Generate secure random defaults
 generate_defaults() {
@@ -59,6 +59,8 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_NODE_ENV [${OUTLINE_NODE_ENV:-production}]: " input
     OUTLINE_NODE_ENV=${input:-${OUTLINE_NODE_ENV:-production}}
+
+    OUTLINE_APP_VERSION=${CURRENT_OUTLINE_APP_VERSION}
 
     echo ""
     echo "SMTP settings:"
