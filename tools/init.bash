@@ -176,11 +176,7 @@ setup_containers() {
 
     echo "Waiting 60 seconds for services to initialize..."
     sleep 60
-
-    echo "Seeding the database with email: ${OUTLINE_SMTP_FROM}"
-    docker compose run --rm outline-app node build/server/scripts/seed.js "${OUTLINE_SMTP_FROM}"
-    echo ""
-    echo "Seeding complete. Please copy the activation link from the console output and open it in your browser."
+    echo "Done! Outline  should be available at: https://${OUTLINE_APP_HOSTNAME}"
     echo ""
 }
 
