@@ -12,7 +12,7 @@ VOL_DIR="${SCRIPT_DIR}/../vol"
 
 OUTLINE_POSTGRES_VERSION=14
 OUTLINE_REDIS_VERSION=6
-OUTLINE_APP_VERSION="0.82.0"
+CURRENT_OUTLINE_APP_VERSION="0.87.4"
 
 # Generate secure random defaults
 generate_defaults() {
@@ -59,6 +59,8 @@ prompt_for_configuration() {
 
     read -p "OUTLINE_NODE_ENV [${OUTLINE_NODE_ENV:-production}]: " input
     OUTLINE_NODE_ENV=${input:-${OUTLINE_NODE_ENV:-production}}
+
+    OUTLINE_APP_VERSION=${CURRENT_OUTLINE_APP_VERSION}
 
     echo ""
     echo "SMTP settings:"
@@ -174,11 +176,7 @@ setup_containers() {
 
     echo "Waiting 60 seconds for services to initialize..."
     sleep 60
-
-    echo "Seeding the database with email: ${OUTLINE_SMTP_FROM}"
-    docker compose run --rm outline-app node build/server/scripts/seed.js "${OUTLINE_SMTP_FROM}"
-    echo ""
-    echo "Seeding complete. Please copy the activation link from the console output and open it in your browser."
+    echo "Done! Outline  should be available at: https://${OUTLINE_APP_HOSTNAME}"
     echo ""
 }
 
