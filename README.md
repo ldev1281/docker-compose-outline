@@ -21,7 +21,7 @@ This project is designed to work with the reverse proxy configuration provided b
 
 1. **Create the shared Docker network** (if it doesn't already exist):
 
-        docker network create --driver bridge proxy-client-outline
+        docker network create --driver bridge --internal proxy-client-outline
 
 2. **Set up the Caddy reverse proxy** by following the instructions in the [`docker-compose-caddy`](https://github.com/ldev1281/docker-compose-caddy) repository.  
 
@@ -130,7 +130,7 @@ CMD_AFTER_BACKUP="docker compose --project-directory /docker/outline up -d"
 
 CMD_BEFORE_RESTORE="docker compose --project-directory /docker/outline down || true"
 CMD_AFTER_RESTORE=(
-"docker network create --driver bridge proxy-client-outline || true"
+"docker network create --driver bridge --internal proxy-client-outline || true"
 "docker compose --project-directory /docker/outline up -d"
 )
 
