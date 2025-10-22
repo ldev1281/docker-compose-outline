@@ -118,8 +118,8 @@ prompt_for_configuration() {
     read -p "OUTLINE_SMTP_HOST [${OUTLINE_SMTP_HOST:-smtp.mailgun.org}]: " input
     OUTLINE_SMTP_HOST=${input:-${OUTLINE_SMTP_HOST:-smtp.mailgun.org}}
 
-    read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-true}]: " input
-    OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-true}}    
+    read -p "OUTLINE_SMTP_SECURE [${OUTLINE_SMTP_SECURE:-false}]: " input
+    OUTLINE_SMTP_SECURE=${input:-${OUTLINE_SMTP_SECURE:-false}}    
 
     read -p "OUTLINE_SMTP_PORT [${OUTLINE_SMTP_PORT:-587}]: " input
     OUTLINE_SMTP_PORT=${input:-${OUTLINE_SMTP_PORT:-587}}
