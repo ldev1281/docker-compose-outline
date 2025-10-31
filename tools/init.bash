@@ -189,9 +189,6 @@ confirm_and_save_configuration() {
     done
     echo "-----------------------------------------------------"
     echo ""
-
-    read -p "Proceed with this configuration? (y/n): " CONFIRM
-    echo ""
     while :; do
         read -p "Proceed with this configuration? (y/n): " CONFIRM
         [[ "$CONFIRM" == "y" ]] && break
