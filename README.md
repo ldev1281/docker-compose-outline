@@ -5,15 +5,34 @@ The stack includes PostgreSQL, Redis, SMTP forwarding via `socat` (with optional
 
 ## Setup Instructions
 
-### 1. Clone the Repository
+### 1. Download and Extract the Release
 
-Clone the project to your server in the `/docker/outline/` directory:
+Download the packaged release to your server into the `/docker/outline/` directory and extract it there.
 
+Create the target directory and enter it:
+
+```bash
+mkdir -p /docker/outline
+cd /docker/outline
 ```
-    mkdir -p /docker/outline
-    cd /docker/outline
-    git clone https://github.com/ldev1281/docker-compose-outline.git .
-```    
+
+You can either download the **latest** release:
+
+```bash
+curl -fsSL "https://github.com/ldev1281/docker-compose-outline/releases/latest/download/docker-compose-outline.tar.gz" -o /tmp/docker-compose-outline.tar.gz
+tar xzf /tmp/docker-compose-outline.tar.gz -C /docker/outline
+rm -f /tmp/docker-compose-outline.tar.gz
+```
+
+Or download a **specific** release (for example `0.82.0`):
+
+```bash
+curl -fsSL "https://github.com/ldev1281/docker-compose-outline/releases/download/0.82.0/docker-compose-outline.tar.gz" -o /tmp/docker-compose-outline.tar.gz
+tar xzf /tmp/docker-compose-outline.tar.gz -C /docker/outline
+rm -f /tmp/docker-compose-outline.tar.gz
+```
+
+After extraction, the contents of the archive should be located directly in `/docker/outline/` (next to `docker-compose.yml`).
 
 ### 2. Create Docker Network and Set Up Reverse Proxy
 
@@ -21,7 +40,9 @@ This project is designed to work with the reverse proxy configuration provided b
 
 1. **Create the shared Docker network** (if it doesn't already exist):
 
-        docker network create --driver bridge --internal proxy-client-outline
+```
+docker network create --driver bridge --internal proxy-client-outline
+```
 
 2. **Set up the Caddy reverse proxy** by following the instructions in the [`docker-compose-caddy`](https://github.com/ldev1281/docker-compose-caddy) repository.  
 
@@ -54,11 +75,10 @@ Configuration Variables:
 | `OUTLINE_AUTHENTIK_CLIENT_SECRET`| Authentik OAuth2 Client Secret                                 | *(manual from Authentik UI)*             |
 | `OUTLINE_AUTHENTIK_URL`          | Public base URL of Authentik instance                          | `https://auth.example.com`               |
 
-
 To configure and launch all required services, run the provided script:
 
 ```
-    ./tools/init.bash
+./tools/init.bash
 ```
 
 The script will:
@@ -72,9 +92,8 @@ Make sure to securely store your `.env` file locally for future reference or red
 
 ### 4. Start the Outline Service
 
-
 ```
-    docker compose up -d
+docker compose up -d
 ```
 
 This will start Outline and make your configured domains available.
@@ -82,7 +101,7 @@ This will start Outline and make your configured domains available.
 ### 5. Verify Running Containers
 
 ```
-    docker compose ps
+docker compose ps
 ```
 
 You should see the `outline-app` container running.
@@ -99,8 +118,6 @@ Outline and its dependencies use the following bind-mounted volumes for data per
 
 ### Example Directory Structure
 
-
-
 ```
 /docker/outline/
 ├── docker-compose.yml
@@ -113,18 +130,17 @@ Outline and its dependencies use the following bind-mounted volumes for data per
 │   └── outline-app/
 ```
 
-
 ## Creating a Backup Task for Outline
 
 To create a backup task for your Outline deployment using [`backup-tool`](https://github.com/jordimock/backup-tool), add a new task file to `/etc/limbo-backup/rsync.conf.d/`:
 
-```bash
+```
 sudo nano /etc/limbo-backup/rsync.conf.d/10-outline.conf.bash
 ```
 
 Paste the following contents:
 
-```bash
+```
 CMD_BEFORE_BACKUP="docker compose --project-directory /docker/outline down"
 CMD_AFTER_BACKUP="docker compose --project-directory /docker/outline up -d"
 
@@ -138,6 +154,7 @@ INCLUDE_PATHS=(
   "/docker/outline"
 )
 ```
+
 ## License
 
 Licensed under the Prostokvashino License. See [LICENSE](LICENSE) for details.
