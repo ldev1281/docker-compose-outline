@@ -24,10 +24,10 @@ tar xzf /tmp/docker-compose-outline.tar.gz -C /docker/outline
 rm -f /tmp/docker-compose-outline.tar.gz
 ```
 
-Or download a **specific** release (for example `0.82.0`):
+Or download a **specific** release (for example `0.86.1`):
 
 ```bash
-curl -fsSL "https://github.com/ldev1281/docker-compose-outline/releases/download/0.82.0/docker-compose-outline.tar.gz" -o /tmp/docker-compose-outline.tar.gz
+curl -fsSL "https://github.com/ldev1281/docker-compose-outline/releases/download/0.86.1/docker-compose-outline.tar.gz" -o /tmp/docker-compose-outline.tar.gz
 tar xzf /tmp/docker-compose-outline.tar.gz -C /docker/outline
 rm -f /tmp/docker-compose-outline.tar.gz
 ```
